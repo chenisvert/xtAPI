@@ -15,7 +15,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +27,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static com.api.freeapi.common.ErrorCode.KEY_ERROR;
 import static com.api.freeapi.common.ErrorCode.PARAMS_ERROR;
 
 @Slf4j
@@ -41,6 +45,10 @@ public class MainServiceImpl  extends ServiceImpl<MainMapper, Context> implement
 
     @Override
     public ResponseResult insert(UserDto userDto) {
+        //判空
+        if (StringUtils.isBlank(userDto.getName()) | StringUtils.isBlank(userDto.getEmail()) | StringUtils.isBlank(userDto.getContext())){
+            throw new UserException(PARAMS_ERROR.getErrMsg());
+        }
         Integer uuid = userDto.getUuid();
         Context context = new Context();
         context.setName(userDto.getName());
@@ -49,8 +57,8 @@ public class MainServiceImpl  extends ServiceImpl<MainMapper, Context> implement
         QueryWrapper<User> wrapper = new QueryWrapper<>();
         wrapper.eq("uuid",uuid);
         List<User> user = userMapper.selectList(wrapper);
-        if (user.isEmpty()){
-            throw  new UserException(PARAMS_ERROR.getErrMsg());
+        if (CollectionUtils.isEmpty(user)){
+            throw  new UserException(KEY_ERROR.getErrMsg());
         }
         Integer uid = 0;
         //判断是否有uuid
@@ -73,6 +81,10 @@ public class MainServiceImpl  extends ServiceImpl<MainMapper, Context> implement
         UserQueryWrapper.select(User::getId);
         log.info("key是：{}",key);
         List<User> usersList = userMapper.selectList(UserQueryWrapper);
+        //判断是否有key
+        if (CollectionUtils.isEmpty(usersList)){
+            throw  new UserException(KEY_ERROR.getErrMsg());
+        }
         User user = new User();
         usersList.stream().map((item) ->{
            user.setId(item.getId());
@@ -101,7 +113,10 @@ public class MainServiceImpl  extends ServiceImpl<MainMapper, Context> implement
         userQueryWrapper.eq(User::getUuid,key);
         userQueryWrapper.select(User::getId);
         List<User>  usersList = userMapper.selectList(userQueryWrapper);
-
+        //判断是否有key
+        if (CollectionUtils.isEmpty(usersList)){
+            throw  new UserException(KEY_ERROR.getErrMsg());
+        }
         User user = new User();
         usersList.stream().map((item) ->{
             user.setId(item.getId());

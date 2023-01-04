@@ -14,13 +14,14 @@ public enum ErrorCode {
 
     PARAMS_ERROR(403,"参数不合法"),
     LOGIN_ERROR(400,"用户名或密码错误"),
-    TOKEN_ERROR(403,"token错误"),
+    KEY_ERROR(403,"key不合法"),
     CODE_ERROR(403,"验证码错误"),
-    SERVICE_ERROR(402,"服务未开通"),
+    SERVICE_ERROR(402,"服务超限"),
     TIMEOUT_ERROR(100,"访问频繁，请稍后再试"),
     SERVER_ERROR(500,"服务器发生错误"),
     DATA_ERROR(501,"数据获取失败"),
     PERMISSION_ERROR(401,"权限不足"),
+    USER_ERROR(403,"账户被禁用"),
     SESSION_ERROR(403,"请登录");
 
 

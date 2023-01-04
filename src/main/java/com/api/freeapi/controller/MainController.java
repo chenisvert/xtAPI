@@ -2,7 +2,9 @@ package com.api.freeapi.controller;
 
 import com.api.freeapi.common.ResponseResult;
 import com.api.freeapi.entity.dto.UserDto;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.concurrent.TimeUnit;
@@ -28,7 +30,6 @@ public class MainController extends BaseController {
     @PostMapping("/insert")
     public ResponseResult insertContext(@RequestBody UserDto contextDto){
         log.info("入参",contextDto);
-        System.out.println("========================"+contextDto);
         return mainService.insert(contextDto);
     }
 
@@ -43,7 +44,7 @@ public class MainController extends BaseController {
 
      */
     @GetMapping("/search/{contexts}/{key}")
-    public ResponseResult searchContext(@PathVariable String contexts,@PathVariable String key){
+    public ResponseResult searchContext(@NonNull @PathVariable String contexts, @PathVariable String key){
         ResponseResult context = (ResponseResult) redisTemplate.opsForValue().get(Search_Key + contexts+key);
         if (context != null){
             return context;
