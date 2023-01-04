@@ -9,16 +9,17 @@
 # 演示地址
 http://api.hh2022.cn
 
-# 部署教程
+# 部署教程（普通部署）
 1.需要一台服务器
 2.安装 jdk11 \
-3.安装nginx(并上传nginx.conf) \
+3.安装nginx(并上传nginx文件夹内的配置文件) \
 4.安装mysql \
 6.修改配置文件 \
 7.maven打包项目 \
 8.上传jar包 \
 9. 后台启动 nohup java -jar xxx.jar &
-
+# 部署教程（docker部署）
+待完善
 
 
 
