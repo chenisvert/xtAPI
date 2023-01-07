@@ -18,5 +18,9 @@ public class ApiController extends BaseController {
     public ResponseResult getUserInfo(@PathVariable String key){
         return apiService.getUserInfo(1, key);
     }
+    @GetMapping("/setAccessCount/{key}")
+    public ResponseResult setAccessCount(@PathVariable String key) {
+        return userService.setAccessCount(key);
+    }
 
 }

@@ -10,7 +10,7 @@
 ![](https://pic.imgdb.cn/item/63b51ad1be43e0d30ebaf994.png)
 
 # 演示地址
-http://api.hh2022.cn \
+http://hh2022.cn \
 http://qaiji.gitee.io/message/
 
 # 前端代码
@@ -28,7 +28,9 @@ http://qaiji.gitee.io/message/
 # 部署教程（docker部署）
 待完善
 
-
+# 更新日志
+2023/1/5 留言查询接口增加分页
+2023/1/8 新增登录和注册测试接口(get)
 
 ## 留言
 如果觉得好就给我一个小小的star吧！

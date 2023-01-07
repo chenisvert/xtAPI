@@ -13,7 +13,8 @@ public enum ErrorCode {
 
 
     PARAMS_ERROR(403,"参数不合法"),
-    LOGIN_ERROR(400,"用户名或密码错误"),
+    USERNAME_ERROR(400,"用户名不存在"),
+    PASSWORD_ERROR(400,"密码错误"),
     KEY_ERROR(403,"key不合法"),
     CODE_ERROR(403,"验证码错误"),
     SERVICE_ERROR(402,"服务超限"),

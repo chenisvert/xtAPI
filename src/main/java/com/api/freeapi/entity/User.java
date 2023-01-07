@@ -21,7 +21,10 @@ public class User implements Serializable {
     @NotBlank(message = "密码不能为空")
     private String password;
 
+    private String email;
+
     private String uuid;
+
 
     private Integer status;
 
@@ -32,6 +35,7 @@ public class User implements Serializable {
     private Integer visitSize;
     //签到
     private Integer signIn;
+
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
