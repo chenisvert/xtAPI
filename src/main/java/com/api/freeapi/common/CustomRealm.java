@@ -4,12 +4,10 @@ import com.api.freeapi.entity.Permissions;
 import com.api.freeapi.entity.User;
 import com.api.freeapi.service.PermissionsService;
 import com.api.freeapi.service.UserService;
+import com.api.freeapi.utils.MD5Util;
 import com.api.freeapi.utils.TokenUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.AuthenticationInfo;
-import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.SimpleAuthenticationInfo;
+import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
@@ -49,9 +47,12 @@ public class CustomRealm extends AuthorizingRealm {
         String username= TokenUtil.getAccount(principalCollection.toString());
         SimpleAuthorizationInfo info= new SimpleAuthorizationInfo();
 
+
+
         LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper();
         userLambdaQueryWrapper.eq(User::getUsername,username);
         User user = userService.getOne(userLambdaQueryWrapper);
+
         //拿权限
         String permissions = permissionsService.getPermissions(user.getIdentity());
 

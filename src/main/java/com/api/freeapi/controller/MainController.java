@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.api.freeapi.common.RedisKey.Search_Key;
+
 
 @Slf4j
 @RestController
@@ -43,19 +43,14 @@ public class MainController extends BaseController {
      * @Since version-11
 
      */
-    @GetMapping("/search/{contexts}/{key}")
-    public ResponseResult searchContext(@NonNull @PathVariable String contexts, @PathVariable String key){
-        ResponseResult context = (ResponseResult) redisTemplate.opsForValue().get(Search_Key + contexts+key);
-        if (context != null){
-            return context;
-        }
-        ResponseResult search = mainService.search(contexts,key);
-        redisTemplate.opsForValue().set(Search_Key+contexts+key,search, 1,TimeUnit.MINUTES);
+    @GetMapping("/searchKeyword/{contexts}/{key}/{page}/{pageSize}")
+    public ResponseResult searchContext(@NonNull @PathVariable String contexts, @PathVariable String key,@PathVariable Integer page,@PathVariable Integer pageSize){
+        ResponseResult search = mainService.searchKeyWord(contexts,key,page,pageSize);
         return search;
     }
 
-    @GetMapping("/searchAll/{key}/{page}/{pageSize}")
+    @GetMapping("/searchPage/{key}/{page}/{pageSize}")
     public ResponseResult searchAllContext(@PathVariable String key,@PathVariable int page,@PathVariable int pageSize){
-        return mainService.searchAll(key,page,pageSize);
+        return mainService.searchPage(key,page,pageSize);
     }
 }

@@ -50,7 +50,7 @@ public class ApiServiceImpl  extends ServiceImpl<ApiMapper,Api> implements ApiSe
 
     @Transactional
     @Override
-    public ResponseResult getUserInfo(Integer id, String key) {
+    public ResponseResult getAccessInfo(Integer id, String key) {
         List<User> userList = userService.verifyKey(key);
         if (CollectionUtils.isEmpty(userList)){
             throw new UserException(KEY_ERROR.getErrMsg());

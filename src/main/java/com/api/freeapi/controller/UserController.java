@@ -11,43 +11,56 @@ import com.api.freeapi.utils.UUIDUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.api.R;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.Objects;
 
 import static com.api.freeapi.common.ErrorCode.*;
-import static com.api.freeapi.common.RedisKey.Search_Key;
 
+
+@Slf4j
 @RestController
 @RequestMapping("/user")
 public class UserController extends BaseController {
 
     private HashMap<Object, Object> map = new HashMap<>();
 
-    @GetMapping("/signIn/{key}")
-    public ResponseResult signInDay(@PathVariable String key) {
-        return userService.signInDay(key);
+    @GetMapping("/signIn")
+    public ResponseResult signInDay() {
+        String token = ((HttpServletRequest)request).getHeader("token");
+        String username = TokenUtil.getAccount(token);
+        log.info("token用户名 ,{}",username);
+        return userService.signInDay(username);
     }
 
 
-
-    @GetMapping("/login/{username}/{password}")
-    public ResponseResult login(@PathVariable String username,@PathVariable String password) {
+    @PostMapping("/login")
+    public ResponseResult login(@RequestBody User users) {
+        String username = users.getUsername();
+        String password = users.getPassword();
+        log.info("姓名：{}，密码：{}",username,password);
         User user = new User();
         user.setUsername(username);
         user.setPassword(password);
         LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
         userLambdaQueryWrapper.eq(User::getUsername,username);
         User user1 = userService.getOne(userLambdaQueryWrapper);
+        if (Objects.isNull(user1)){
+            return ResponseResult.error(USERNAME_ERROR.getErrCode(), USERNAME_ERROR.getErrMsg());
+        }
+        //加密
+        password = MD5Util.getMD5(password);
+
+        log.info("数据库登录密码：{}",user1.getPassword());
         System.out.println(user1);
         if(username.equals(user1.getUsername())) {
             if (!password.equals(user1.getPassword())) {
@@ -73,8 +86,13 @@ public class UserController extends BaseController {
         return ResponseResult.success(map);
     }
 
-    @GetMapping("/register/{username}/{password}/{email}")
-    public ResponseResult Register(@PathVariable String username,@PathVariable String password,@PathVariable String email) {
+    @GetMapping("/register")
+    public ResponseResult Register(@RequestBody User users) {
+        //取出传入的参数
+        String username = users.getUsername();
+        String password = users.getPassword();
+        String email = users.getEmail();
+
         User user = new User();
         String md5Password = MD5Util.getMD5(password);
         user.setUsername(username);

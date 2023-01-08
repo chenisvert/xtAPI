@@ -9,11 +9,13 @@ import java.util.List;
 
 public interface UserService extends IService<User> {
     //每日签到
-    ResponseResult signInDay(String key);
+    ResponseResult signInDay(String username);
     //验证key
     List<User> verifyKey(String key);
     //重置签到状态（全部）
     Boolean resetSignIn();
     //增加访问量
     ResponseResult setAccessCount(String key);
+    //根据用户名获取用户信息
+    ResponseResult getUserInfo(String username);
 }

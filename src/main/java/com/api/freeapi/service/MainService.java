@@ -9,7 +9,7 @@ public interface MainService  extends IService<Context> {
     //插入
     ResponseResult insert(UserDto contextDto);
     //根据标题查询
-    ResponseResult search(String contexts,String key);
+    ResponseResult searchKeyWord(String contexts,String key,Integer page,Integer pageSize);
     //查询所有
-    ResponseResult searchAll(String key,int page,int pageSize);
+    ResponseResult searchPage(String key,int page,int pageSize);
 }

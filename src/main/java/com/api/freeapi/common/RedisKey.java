@@ -4,5 +4,5 @@ import java.io.File;
 
 public class RedisKey {
     //查询缓存key
-    public static final String Search_Key = "searchContext";
+    public static final String KEY_SEARCH = "searchContext";
 }

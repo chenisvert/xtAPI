@@ -6,5 +6,6 @@ import com.api.freeapi.entity.Context;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 public interface ApiService extends IService<Api> {
-    ResponseResult getUserInfo(Integer id, String key);
+    //访问量
+    ResponseResult getAccessInfo(Integer id, String key);
 }
