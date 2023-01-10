@@ -2,10 +2,7 @@ package com.api.freeapi.controller;
 
 
 import com.api.freeapi.entity.Api;
-import com.api.freeapi.service.ApiService;
-import com.api.freeapi.service.MainService;
-import com.api.freeapi.service.UserPrivilegeService;
-import com.api.freeapi.service.UserService;
+import com.api.freeapi.service.*;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -33,6 +30,8 @@ public class BaseController {
     protected UserPrivilegeService userPrivilegeService;
     @Resource
     protected UserService userService;
+    @Resource
+    protected AuthenticationService authenticationService;
 
 
 

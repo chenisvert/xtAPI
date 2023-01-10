@@ -1,5 +1,7 @@
 package com.api.freeapi.utils;
 
+import lombok.extern.slf4j.Slf4j;
+
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -9,15 +11,18 @@ import javax.servlet.http.HttpServletRequest;
  * @author : https://github.com/AdlerED
  * @date : 2019-11-06 21:17
  **/
+@Slf4j
 public class IPUtil {
     public static String getIpAddr(HttpServletRequest request) {
         String ip = request.getHeader("X-Real-IP");
-        if (!isBlank(ip) && !"unknown".equalsIgnoreCase(ip)) {
-            return ip;
-        }
+
+//        if (!isBlank(ip) && !"unknown".equalsIgnoreCase(ip)) {
+//            return ip;
+//        }
         ip = request.getHeader("X-Forwarded-For");
         if (!isBlank(ip) && !"unknown".equalsIgnoreCase(ip)) {
             // 多次反向代理后会有多个IP值，第一个为真实IP。
+            log.info("获取ip：{}",ip);
             int index = ip.indexOf(',');
             if (index != -1) {
                 return ip.substring(0, index);

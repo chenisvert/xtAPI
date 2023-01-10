@@ -24,22 +24,29 @@ public class User implements Serializable {
 
     private String email;
 
-    private String uuid;
+    private String uuid; //key
 
 
     private Integer status;
 
-    private Integer identity;
+    private Integer identity;  //身份
 
-    private Integer size;
+    private Integer size; //当前调用量
 
-    private Integer visitSize;
-    //签到
-    private Integer signIn;
+    private Integer visitSize; //访问量接口
+
+    private Integer signIn;   //签到
 
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private  LocalDateTime last_login;
+
+    private Integer authentication; //是否实名认证 0未认证 1已认证
+
 }

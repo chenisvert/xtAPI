@@ -2,6 +2,7 @@ package com.api.freeapi.utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundListOperations;
+import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -152,6 +153,29 @@ public class RedisUtil {
     }
 
     //================================Map=================================
+
+    /**
+     * 存储数据或修改数据
+     *
+     * @param modelMap
+     * @param mapName
+     */
+    public static void setMapKey(String mapName, Map<String, Object> modelMap) {
+        HashOperations<String, String, Object> hps = redisTemplate.opsForHash();
+        hps.putAll(mapName, modelMap);
+    }
+
+    /**
+     * 获取数据Map
+     *
+     * @param mapName
+     * @return
+     */
+    public static Map<String, Object> getMapValue(String mapName) {
+        HashOperations<String, String, Object> hps = redisTemplate.opsForHash();
+        return hps.entries(mapName);
+
+    }
     /**
      * HashGet
      * @param key 键 不能为null
