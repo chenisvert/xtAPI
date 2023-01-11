@@ -16,7 +16,7 @@ spring:
   mail:
     host: smtp.qq.com  # 发送邮件的服务器地址
     username: 2726225713@qq.com # 登录qq邮箱的账号
-    password: mqfnzbqsrwtpdehe  # 开启 IMAP/SMTP服务 获得的授权码,而不是qq邮箱的登录密码
+    password: xx  # 开启 IMAP/SMTP服务 获得的授权码,而不是qq邮箱的登录密码
     default-encoding: UTF-8
     port: 587
   # redis配置

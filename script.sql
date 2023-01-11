@@ -8,6 +8,18 @@ create table api
         unique (id)
 );
 
+create table authentication
+(
+    id          int auto_increment
+        primary key,
+    username    varchar(100) not null,
+    name        varchar(100) not null,
+    id_card     varchar(100) not null,
+    create_time datetime     not null,
+    constraint authentication_id_uindex
+        unique (id)
+);
+
 create table context
 (
     id          int auto_increment
@@ -35,20 +47,26 @@ create table permissions
 
 create table user
 (
-    id          int auto_increment
+    id             int auto_increment
         primary key,
-    username    varchar(100)  not null,
-    password    varchar(100)  not null,
-    email       varchar(100)  not null,
-    create_time datetime      not null,
-    uuid        varchar(100)  not null,
-    identity    int default 1 not null comment '1普通用户0管理员2vip用户',
-    status      int default 1 not null comment '1启用0禁用',
-    size        int default 0 not null,
-    visit_size  int default 0 not null,
-    sign_in     int default 0 not null comment '0今日未签到1今日已签到',
+    username       varchar(100)                           not null,
+    password       varchar(100)                           not null,
+    email          varchar(100)                           not null,
+    create_time    datetime                               not null,
+    uuid           varchar(100)                           not null,
+    identity       int      default 1                     not null comment '1普通用户0管理员2vip用户',
+    status         int      default 1                     not null comment '1启用0禁用',
+    size           int      default 0                     not null,
+    visit_size     int      default 0                     not null,
+    sign_in        int      default 0                     not null comment '0今日未签到1今日已签到',
+    last_login     datetime default '1971-01-02 00:00:00' not null,
+    authentication int      default 0                     not null comment '是否实名认证成功 0未实名 1已实名',
+    constraint user_email_uindex
+        unique (email),
     constraint user_id_uindex
-        unique (id)
+        unique (id),
+    constraint user_username_uindex
+        unique (username)
 );
 
 create table user_privilege

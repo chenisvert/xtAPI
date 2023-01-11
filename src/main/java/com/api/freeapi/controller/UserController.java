@@ -6,25 +6,12 @@ import com.api.freeapi.common.ResponseResult;
 import com.api.freeapi.common.UserException;
 import com.api.freeapi.entity.Authentication;
 import com.api.freeapi.entity.User;
-import com.api.freeapi.utils.MD5Util;
-import com.api.freeapi.utils.RedisUtil;
-import com.api.freeapi.utils.TokenUtil;
-import com.api.freeapi.utils.UUIDUtils;
+import com.api.freeapi.utils.*;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.api.R;
-import com.google.common.hash.BloomFilter;
-import com.google.common.hash.Funnel;
-import com.google.common.hash.Funnels;
-import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.IncorrectCredentialsException;
-import org.apache.shiro.authc.SimpleAuthenticationInfo;
-import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.subject.Subject;
 import org.redisson.api.RBloomFilter;
+import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
@@ -46,6 +33,9 @@ public class UserController extends BaseController {
     private HashMap<Object, Object> map = new HashMap<>();
     @Resource
     private RedissonClient redissonClient;
+    @Resource
+    private RedissonUtils redissonUtils;
+
 
 
     @GetMapping("/signIn")
@@ -84,14 +74,16 @@ public class UserController extends BaseController {
                 return ResponseResult.error(PASSWORD_ERROR.getErrCode(), PASSWORD_ERROR.getErrMsg());
             }
             Integer statusCache = userCache.getStatus();
+
             //判断账号是否禁用
             if (statusCache == 0){
                 throw new UserException(USER_ERROR.getErrMsg());
             }
             log.info("登录成功! 方式:{缓存登录}");
+
             User userUpDataTime = new User();
             userUpDataTime.setId(userCache.getId());
-            userUpDataTime.setLast_login(LocalDateTime.now());
+            userUpDataTime.setLastLogin(LocalDateTime.now());
             //更新上一次登录时间
             userService.saveOrUpdate(userUpDataTime);
             //生成token

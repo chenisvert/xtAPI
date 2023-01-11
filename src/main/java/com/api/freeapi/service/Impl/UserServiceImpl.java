@@ -4,16 +4,17 @@ import com.api.freeapi.api.Authentication;
 import com.api.freeapi.common.ResponseResult;
 import com.api.freeapi.common.UserException;
 import com.api.freeapi.config.RedissonManager;
+import com.api.freeapi.entity.Context;
 import com.api.freeapi.entity.User;
+import com.api.freeapi.mapper.MainMapper;
 import com.api.freeapi.mapper.UserMapper;
 import com.api.freeapi.service.AuthenticationService;
 import com.api.freeapi.service.UserService;
 import com.api.freeapi.utils.RedisUtil;
+import com.api.freeapi.utils.RedissonUtils;
 import com.api.freeapi.utils.TokenUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.google.common.hash.BloomFilter;
-import com.google.common.hash.Funnels;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RBloomFilter;
@@ -41,10 +42,14 @@ public class UserServiceImpl  extends ServiceImpl<UserMapper, User> implements U
     @Resource
     private UserMapper userMapper;
     @Resource
+    private MainMapper mainMapper;
+    @Resource
     private AuthenticationService authenticationService;
 
     @Resource(description = "myRedisson")
     private RedissonClient redissonClient;
+    @Resource
+    private RedissonUtils redissonUtils;
     @Resource
     private RedisTemplate redisTemplate;
 
@@ -179,6 +184,7 @@ public class UserServiceImpl  extends ServiceImpl<UserMapper, User> implements U
 
     @Override
     public ResponseResult setAccessCount(String key) {
+
         List<User> userList = this.verifyKey(key);
         if (CollectionUtils.isEmpty(userList)){
             throw new UserException(KEY_ERROR.getErrMsg());
@@ -190,11 +196,16 @@ public class UserServiceImpl  extends ServiceImpl<UserMapper, User> implements U
         }
         Integer accessCount = user.getVisitSize();
         log.info("未更新前访问量：{}",accessCount);
+        //加锁
+        redissonUtils.lock(key+"_setAccessCount-lock",120);
         if (accessCount >= 0){
             user.setVisitSize(accessCount+1);
         }
         log.info("更新后访问量参数：{}",user);
+
         userMapper.updateById(user);
+        //释放锁
+        redissonUtils.unlock(key+"_setAccessCount-lock");
         map.put("count",user.getVisitSize());
         return ResponseResult.success(map);
     }
@@ -217,13 +228,26 @@ public class UserServiceImpl  extends ServiceImpl<UserMapper, User> implements U
             user1.setPassword(user.getUsername());
             user1.setStatus(user.getStatus());
             user1.setSignIn(user.getSignIn());
+            user1.setId(user.getId());
+            user1.setAuthentication(user.getAuthentication());
+            user1.setLastLogin(user.getLastLogin());
             identity = user.getIdentity();
             user1.setCreateTime(user.getCreateTime());
         }
+
+        LambdaQueryWrapper<Context> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Context::getUid,user1.getId());
+        Integer count = mainMapper.selectCount(queryWrapper);
         String identitys = "";
         String statusInfo = "";
         String signln = "";
+        String authStatus = "";
         //封装账户状态
+        if (user1.getAuthentication() == 1){
+            authStatus = "已实名";
+        }else {
+            authStatus = "未实名";
+        }
         if (user1.getSignIn() == 1){
             signln = "已签到";
         }else {
@@ -245,8 +269,11 @@ public class UserServiceImpl  extends ServiceImpl<UserMapper, User> implements U
         map.put("username",username);
         map.put("identity",identitys);
         map.put("signin",signln);
+        map.put("auth",authStatus);
+        map.put("count",count);
         map.put("status",statusInfo);
         map.put("createtime",user1.getCreateTime());
+        map.put("lastlogin",user1.getLastLogin());
         return ResponseResult.success(map);
     }
 }
