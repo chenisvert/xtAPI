@@ -6,12 +6,20 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisNode;
+import org.springframework.data.redis.connection.RedisSentinelConfiguration;
 import org.springframework.data.redis.core.*;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @ Program       :  com.ljnt.redis.config.RedisConfig
@@ -19,8 +27,17 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
  * @ Author        :  lj
  * @ CreateDate    :  2020-2-6 21:23
  */
+@Slf4j
 @Configuration
 public class RedisConfig {
+
+
+    @Value("${spring.redis.sentinel.master}")
+    private String master;
+    @Value("${spring.redis.sentinel.nodes}")
+    private String redisNodes;
+
+
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
@@ -30,6 +47,26 @@ public class RedisConfig {
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         return redisTemplate;
     }
+
+    /**
+     * redis哨兵配置
+     * @return
+     */
+    @Bean
+    public RedisSentinelConfiguration redisSentinelConfiguration(){
+        RedisSentinelConfiguration configuration = new RedisSentinelConfiguration();
+        String[] host = redisNodes.split(",");
+        for(String redisHost : host){
+            String[] item = redisHost.split(":");
+            String ip = item[0];
+            String port = item[1];
+            configuration.addSentinel(new RedisNode(ip, Integer.parseInt(port)));
+        }
+        configuration.setMaster(master);
+        return configuration;
+    }
+
+
 
 
 

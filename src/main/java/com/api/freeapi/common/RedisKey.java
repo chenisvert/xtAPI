@@ -7,4 +7,5 @@ public class RedisKey {
     public static final String KEY_SEARCH = "searchContext";
     //用户数据缓存
     public static final String USER_APP = "userCache";
+    public static final String GETACCESSLOCK_KEY = "getAccessInfo";
 }

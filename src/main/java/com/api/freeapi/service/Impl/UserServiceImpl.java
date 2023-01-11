@@ -28,6 +28,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -55,7 +56,6 @@ public class UserServiceImpl  extends ServiceImpl<UserMapper, User> implements U
 
 
     private HashMap<Object, Object> map = new HashMap<>();
-
 
 
     @PostConstruct
@@ -124,7 +124,18 @@ public class UserServiceImpl  extends ServiceImpl<UserMapper, User> implements U
     }
 
     @Override
+    public Integer getMessageCountById(String id) {
+        if (id == null){
+            throw new UserException(PARAMS_ERROR.getErrMsg());
+        }
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(User::getId,id);
+        return this.count(queryWrapper);
+    }
+
+    @Override
     public ResponseResult signInDay(String username) {
+        map.clear();
         log.info("signInDay接口 入参：{}",username);
         LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
         userLambdaQueryWrapper.eq(User::getUsername,username);
@@ -145,7 +156,7 @@ public class UserServiceImpl  extends ServiceImpl<UserMapper, User> implements U
         }
         //签到奖励服务调用量
         Random ran = new Random();
-        int add = ran.nextInt(500);
+        int add = ran.nextInt(120);
 
         if (user.getSize()-add < 0){
             user.setSize(0);
@@ -164,6 +175,7 @@ public class UserServiceImpl  extends ServiceImpl<UserMapper, User> implements U
 
     @Override
     public List<User> verifyKey(String key) {
+        map.clear();
         if (StringUtils.isBlank(key)){
             throw new UserException(PARAMS_ERROR.getErrMsg());
         }
@@ -189,29 +201,47 @@ public class UserServiceImpl  extends ServiceImpl<UserMapper, User> implements U
         if (CollectionUtils.isEmpty(userList)){
             throw new UserException(KEY_ERROR.getErrMsg());
         }
-        User user = new User();
+        Integer id = null;
         for (User user1:userList) {
-            user.setId(user1.getId());
-            user.setVisitSize(user1.getVisitSize());
+             id = user1.getId();
         }
-        Integer accessCount = user.getVisitSize();
-        log.info("未更新前访问量：{}",accessCount);
-        //加锁
-        redissonUtils.lock(key+"_setAccessCount-lock",120);
-        if (accessCount >= 0){
-            user.setVisitSize(accessCount+1);
+        log.info("setAccessCount 查询用户id：{}",id);
+        //查询账号状态
+        Boolean status = this.checkUserStatus(id);
+        if (!status){
+            throw new UserException(USER_ERROR.getErrMsg());
         }
-        log.info("更新后访问量参数：{}",user);
+        //执行更新
+        userMapper.addVisitCountById(id);
+        Integer count = userMapper.selectVisitCountById(id);
 
-        userMapper.updateById(user);
-        //释放锁
-        redissonUtils.unlock(key+"_setAccessCount-lock");
-        map.put("count",user.getVisitSize());
+        map.put("count",count);
         return ResponseResult.success(map);
     }
 
     @Override
+    public Boolean checkUserStatus(Integer id) {
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(User::getId,id);
+        queryWrapper.select(User::getStatus);
+        List<User> list = this.list(queryWrapper);
+        if (CollectionUtils.isEmpty(list)){
+            return null;
+        }
+        Integer status = null;
+        for (User user:list) {
+             status = user.getStatus();
+        }
+        if (status == 1){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    @Override
     public ResponseResult getUserInfo(String username) {
+        map.clear();
         if (StringUtils.isBlank(username)){
             throw new UserException(PARAMS_ERROR.getErrMsg());
         }
@@ -224,15 +254,18 @@ public class UserServiceImpl  extends ServiceImpl<UserMapper, User> implements U
         User user1 = new User();
         //遍历
         Integer identity = null;
+        DateTimeFormatter dfDateTime = DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH时mm分ss秒");
+        String zcTime = null;
+        String loginTime = null;
         for (User user:userList) {
             user1.setPassword(user.getUsername());
             user1.setStatus(user.getStatus());
             user1.setSignIn(user.getSignIn());
             user1.setId(user.getId());
             user1.setAuthentication(user.getAuthentication());
-            user1.setLastLogin(user.getLastLogin());
+            loginTime = dfDateTime.format(user.getLastLogin());
             identity = user.getIdentity();
-            user1.setCreateTime(user.getCreateTime());
+             zcTime = dfDateTime.format(user.getCreateTime());
         }
 
         LambdaQueryWrapper<Context> queryWrapper = new LambdaQueryWrapper<>();
@@ -272,8 +305,8 @@ public class UserServiceImpl  extends ServiceImpl<UserMapper, User> implements U
         map.put("auth",authStatus);
         map.put("count",count);
         map.put("status",statusInfo);
-        map.put("createtime",user1.getCreateTime());
-        map.put("lastlogin",user1.getLastLogin());
+        map.put("createtime",zcTime);
+        map.put("lastlogin",loginTime);
         return ResponseResult.success(map);
     }
 }

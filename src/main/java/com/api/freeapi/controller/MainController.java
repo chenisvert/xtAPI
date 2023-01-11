@@ -53,4 +53,8 @@ public class MainController extends BaseController {
     public ResponseResult searchAllContext(@PathVariable String key,@PathVariable int page,@PathVariable int pageSize){
         return mainService.searchPage(key,page,pageSize);
     }
+    @GetMapping("/ThumbsUp/{id}")
+    public ResponseResult giveThumbsUp(@PathVariable Integer id){
+        return mainService.giveThumbsUp(id);
+    }
 }

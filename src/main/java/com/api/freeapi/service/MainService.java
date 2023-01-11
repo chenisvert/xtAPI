@@ -12,4 +12,6 @@ public interface MainService  extends IService<Context> {
     ResponseResult searchKeyWord(String contexts,String key,Integer page,Integer pageSize);
     //查询所有
     ResponseResult searchPage(String key,int page,int pageSize);
+    //点赞
+    ResponseResult giveThumbsUp(Integer id);
 }

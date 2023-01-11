@@ -6,6 +6,7 @@ import com.api.freeapi.common.ResponseResult;
 import com.api.freeapi.common.UserException;
 import com.api.freeapi.entity.Authentication;
 import com.api.freeapi.entity.User;
+import com.api.freeapi.entity.UserInfo;
 import com.api.freeapi.utils.*;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +50,7 @@ public class UserController extends BaseController {
 
     @PostMapping("/login")
     public ResponseResult login(@RequestBody User users) {
+        map.clear();
         String username = users.getUsername();
         String password = users.getPassword();
         //校验入参
@@ -105,11 +107,10 @@ public class UserController extends BaseController {
         if (Objects.isNull(user1)){
             return ResponseResult.error(USERNAME_ERROR.getErrCode(), USERNAME_ERROR.getErrMsg());
         }
-        //加密
-        password = MD5Util.getMD5(password);
-
         log.info("数据库登录密码：{}",user1.getPassword());
-        System.out.println(user1);
+        log.info("传入后加密的密码：{}",password);
+        System.out.println("--------------"+username.equals(user1.getUsername()));
+        System.out.println("----------------"+username.equals(user1.getUsername()));
         if(username.equals(user1.getUsername())) {
             if (!password.equals(user1.getPassword())) {
                 return ResponseResult.error(PASSWORD_ERROR.getErrCode(), PASSWORD_ERROR.getErrMsg());
@@ -117,7 +118,6 @@ public class UserController extends BaseController {
         }else if (username.equals(user1.getUsername())) {
             if (!password.equals(user1.getPassword())) {
                 return ResponseResult.error(PASSWORD_ERROR.getErrCode(), PASSWORD_ERROR.getErrMsg());
-
             }
         } else {
             return ResponseResult.error(USERNAME_ERROR.getErrCode(), USERNAME_ERROR.getErrMsg());
@@ -147,12 +147,15 @@ public class UserController extends BaseController {
         }
 
         User user = new User();
+        UserInfo userSave = new UserInfo();
         String md5Password = MD5Util.getMD5(password);
         user.setUsername(username);
         user.setPassword(md5Password);
         user.setEmail(email);
         user.setUuid(UUIDUtils.create());
         userService.save(user);
+        userSave.setUsername(username);
+        userInfoService.save(userSave);
         bloomFilter.add(USER_APP + "_login_" + username);
         map.put("msg","注册成功");
         return ResponseResult.success(map);

@@ -23,12 +23,18 @@ public class ApiController extends BaseController {
     public ResponseResult setAccessCount(@PathVariable String key) {
         return userService.setAccessCount(key);
     }
-
     @GetMapping("/getUserInfo/{username}")
     public ResponseResult getUserInfo(@PathVariable String username) {
         return userService.getUserInfo(username);
     }
 
+    @GetMapping("/getMessageRanking")
+    public ResponseResult getMessageRanking() {
+        return apiService.getActiveRanking();
+    }
 
-
+    @GetMapping("/getMessageCount/{username}")
+    public ResponseResult getVisitCountByUsername(@PathVariable String username) {
+        return apiService.getVisitCountByUsername(username);
+    }
 }

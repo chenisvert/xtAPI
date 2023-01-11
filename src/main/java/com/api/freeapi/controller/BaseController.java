@@ -2,6 +2,7 @@ package com.api.freeapi.controller;
 
 
 import com.api.freeapi.entity.Api;
+import com.api.freeapi.entity.UserInfo;
 import com.api.freeapi.service.*;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
@@ -32,6 +33,8 @@ public class BaseController {
     protected UserService userService;
     @Resource
     protected AuthenticationService authenticationService;
+    @Resource
+    protected UserInfoService userInfoService;
 
 
 

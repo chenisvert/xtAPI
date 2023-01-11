@@ -24,13 +24,14 @@ create table context
 (
     id          int auto_increment
         primary key,
-    uid         int          not null,
-    name        varchar(100) not null,
-    email       varchar(200) not null,
-    context     longtext     null,
-    address     varchar(100) not null,
-    create_time datetime     not null,
-    ip          varchar(100) null,
+    uid         int           not null,
+    name        varchar(100)  not null,
+    email       varchar(200)  not null,
+    context     longtext      null,
+    address     varchar(100)  not null,
+    create_time datetime      not null,
+    ip          varchar(100)  null,
+    thumbs_up   int default 0 not null comment '点赞',
     constraint context_id_uindex
         unique (id)
 );
@@ -66,6 +67,17 @@ create table user
     constraint user_id_uindex
         unique (id),
     constraint user_username_uindex
+        unique (username)
+);
+
+create table user_info
+(
+    username  varchar(100)  not null
+        primary key,
+    thumbs_up int default 0 not null,
+    integral  int default 0 not null,
+    Diamonds  int default 0 not null,
+    constraint user_info_username_uindex
         unique (username)
 );
 

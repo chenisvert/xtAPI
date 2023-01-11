@@ -8,4 +8,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface ApiService extends IService<Api> {
     //访问量
     ResponseResult getAccessInfo(Integer id, String key);
+    //获取活跃榜
+    ResponseResult getActiveRanking();
+    //根据用户名查网站访问量
+    ResponseResult getVisitCountByUsername(String username);
 }

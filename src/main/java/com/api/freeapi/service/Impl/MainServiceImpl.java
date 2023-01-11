@@ -6,8 +6,10 @@ import com.api.freeapi.common.ResponseResult;
 import com.api.freeapi.common.UserException;
 import com.api.freeapi.entity.Context;
 import com.api.freeapi.entity.User;
+import com.api.freeapi.entity.UserInfo;
 import com.api.freeapi.entity.dto.UserDto;
 import com.api.freeapi.mapper.MainMapper;
+import com.api.freeapi.mapper.UserInfoMapper;
 import com.api.freeapi.mapper.UserMapper;
 import com.api.freeapi.service.MainService;
 import com.api.freeapi.utils.IPUtil;
@@ -34,8 +36,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.alibaba.druid.sql.ast.expr.SQLSizeExpr.Unit.T;
-import static com.api.freeapi.common.ErrorCode.KEY_ERROR;
-import static com.api.freeapi.common.ErrorCode.PARAMS_ERROR;
+import static com.api.freeapi.common.ErrorCode.*;
 import static com.api.freeapi.common.RedisKey.KEY_SEARCH;
 
 @Slf4j
@@ -46,6 +47,8 @@ public class MainServiceImpl  extends ServiceImpl<MainMapper, Context> implement
     private MainMapper mainMapper;
     @Resource
     private UserMapper userMapper;
+    @Resource
+    private UserInfoMapper userInfoMapper;
     @Resource
     private HttpServletRequest request;
     @Resource
@@ -118,7 +121,7 @@ public class MainServiceImpl  extends ServiceImpl<MainMapper, Context> implement
         queryWrapper.eq(Context::getUid,user.getId());
         queryWrapper.like(Context::getContext,contexts);
         //按照时间倒叙
-        queryWrapper.orderByDesc(Context::getCreateTime);
+        queryWrapper.orderByDesc(Context::getId,Context::getThumbsUp);
         queryWrapper.select(Context::getEmail,Context::getContext,Context::getCreateTime,Context::getName,Context::getAddress);
         Page<Context> pageInfo = new Page<>(page, pageSize);
 
@@ -155,13 +158,40 @@ public class MainServiceImpl  extends ServiceImpl<MainMapper, Context> implement
         log.info("id {}",user.getId());
         LambdaQueryWrapper<Context> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Context::getUid,user.getId());
-        //按照时间倒叙
-        queryWrapper.orderByDesc(Context::getCreateTime);
-        queryWrapper.select(Context::getName,Context::getEmail,Context::getContext,Context::getCreateTime,Context::getAddress);
+        //按照id和点赞量倒叙
+        queryWrapper.orderByDesc(Context::getId,Context::getThumbsUp);
+        queryWrapper.select(Context::getName,Context::getThumbsUp,Context::getEmail,Context::getContext,Context::getCreateTime,Context::getAddress,Context::getId);
         //查询
         Page page1 = mainMapper.selectPage(pageInfo, queryWrapper);
         RedisUtil.set(KEY_SEARCH +"_"+"searchPage"+"_" + key + "_" + page + "_" + pageSize,page1,300);
         map.put("list",page1);
+        return ResponseResult.success(map);
+    }
+
+    @Override
+    public ResponseResult giveThumbsUp(Integer id) {
+        map.clear();
+        if (id == null){
+            throw new UserException(PARAMS_ERROR.getErrMsg());
+        }
+
+        String username = userMapper.selectUserNameByContextId(id);
+        if (StringUtils.isBlank(username)){
+            throw new UserException(USERNAME_ERROR.getErrMsg());
+        }
+        mainMapper.addGiveThumbsUpById(id);
+        userInfoMapper.addThumbsCountByUsername(username);
+        String uuid = userMapper.selectUuidByUserName(username);
+
+        List<Context> contextList = mainMapper.selectThumbsUpById(id);
+        Set keysPage = redisTemplate.keys(KEY_SEARCH +"_"+"searchPage"+"_" + uuid +"_*");
+        redisTemplate.delete(keysPage);
+
+        Integer thumbs = null;
+        for (Context context:contextList) {
+             thumbs = context.getThumbsUp();
+        }
+        map.put("thumbs",thumbs);
         return ResponseResult.success(map);
     }
 }

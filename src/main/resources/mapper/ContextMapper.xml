@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.api.freeapi.mapper.MainMapper">
+
+    <!-- 根据留言的id加点赞 -->
+    <update id="addGiveThumbsUpById" parameterType="com.api.freeapi.entity.Context">
+        update context set thumbs_up=thumbs_up+1 where id = #{id}
+    </update>
+    <!-- 根据留言id查询留言点赞-->
+    <select id="selectThumbsUpById"  resultType="com.api.freeapi.entity.Context">
+        select thumbs_up from context where id = #{id}
+    </select>
+
+</mapper>

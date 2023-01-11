@@ -31,6 +31,9 @@ public class Context implements Serializable {
 
     private String ip;
 
+    //点赞
+    private Integer thumbsUp;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @TableField(fill = FieldFill.INSERT)

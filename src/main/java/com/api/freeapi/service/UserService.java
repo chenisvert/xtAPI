@@ -16,6 +16,8 @@ public interface UserService extends IService<User> {
     Boolean resetSignIn();
     //增加访问量
     ResponseResult setAccessCount(String key);
+    //根据id查询用户是否启用
+    Boolean checkUserStatus(Integer id);
     //根据用户名获取用户信息
     ResponseResult getUserInfo(String username);
     //初始化用户数据加入缓存
@@ -24,4 +26,6 @@ public interface UserService extends IService<User> {
     ResponseResult changeUserRealAuthSataus(String name,String idCard);
     //token获取用户名
     String getTokenInfo();
+    //id根据获取留言条数
+    Integer getMessageCountById(String id);
 }
