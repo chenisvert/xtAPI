@@ -14,4 +14,6 @@ public interface MainMapper extends BaseMapper<Context> {
     //根据id查留言的点赞
     List<Context> selectThumbsUpById(@Param("id") Integer id);
 
+    List<Context> selectMaxThumbsUpById(@Param("uid") Integer uid);
+
 }

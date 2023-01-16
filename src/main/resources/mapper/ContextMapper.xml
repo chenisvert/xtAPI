@@ -10,5 +10,8 @@
     <select id="selectThumbsUpById"  resultType="com.api.freeapi.entity.Context">
         select thumbs_up from context where id = #{id}
     </select>
+    <select id="selectMaxThumbsUpById"   resultType="com.api.freeapi.entity.Context">
+        select thumbs_up from context where uid = #{uid} order by thumbs_up desc limit 1
+    </select>
 
 </mapper>

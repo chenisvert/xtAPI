@@ -163,8 +163,15 @@ public class MainServiceImpl  extends ServiceImpl<MainMapper, Context> implement
         queryWrapper.select(Context::getName,Context::getThumbsUp,Context::getEmail,Context::getContext,Context::getCreateTime,Context::getAddress,Context::getId);
         //查询
         Page page1 = mainMapper.selectPage(pageInfo, queryWrapper);
+        List<Context> list = mainMapper.selectMaxThumbsUpById(user.getId());
+        Integer maxThumbs = null;
+        for (Context context:list) {
+            maxThumbs = context.getThumbsUp();
+        }
+        maxThumbs = maxThumbs - 10;
         RedisUtil.set(KEY_SEARCH +"_"+"searchPage"+"_" + key + "_" + page + "_" + pageSize,page1,300);
         map.put("list",page1);
+        map.put("hot",maxThumbs);
         return ResponseResult.success(map);
     }
 
