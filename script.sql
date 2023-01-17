@@ -36,6 +36,9 @@ create table context
         unique (id)
 );
 
+create index context_thumbs_up_index
+    on context (thumbs_up);
+
 create table permissions
 (
     id       int auto_increment
@@ -69,6 +72,9 @@ create table user
     constraint user_username_uindex
         unique (username)
 );
+
+create index user_uuid_index
+    on user (uuid);
 
 create table user_info
 (
