@@ -164,6 +164,9 @@ public class MainServiceImpl  extends ServiceImpl<MainMapper, Context> implement
         //查询
         Page page1 = mainMapper.selectPage(pageInfo, queryWrapper);
         List<Context> list = mainMapper.selectMaxThumbsUpById(user.getId());
+        if (CollectionUtils.isEmpty(list)){
+            throw  new UserException("暂无留言");
+        }
         Integer maxThumbs = null;
         for (Context context:list) {
             maxThumbs = context.getThumbsUp();
@@ -177,7 +180,6 @@ public class MainServiceImpl  extends ServiceImpl<MainMapper, Context> implement
 
     @Override
     public ResponseResult giveThumbsUp(Integer id) {
-        map.clear();
         if (id == null){
             throw new UserException(PARAMS_ERROR.getErrMsg());
         }

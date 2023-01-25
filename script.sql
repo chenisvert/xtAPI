@@ -36,8 +36,8 @@ create table context
         unique (id)
 );
 
-create index context_thumbs_up_index
-    on context (thumbs_up);
+create index context_thumbs_up_uid_index
+    on context (thumbs_up, uid);
 
 create table permissions
 (

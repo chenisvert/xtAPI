@@ -58,26 +58,7 @@ public class UserServiceImpl  extends ServiceImpl<UserMapper, User> implements U
     private HashMap<Object, Object> map = new HashMap<>();
 
 
-    @PostConstruct
-    public void InitUser(){
-        RBloomFilter<String> bloomFilter = redissonClient.getBloomFilter("user_login");
-        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.select(User::getId,User::getUsername,User::getPassword,User::getEmail,User::getStatus);
-        List<Map<String, Object>> maps = userMapper.selectMaps(queryWrapper);
-        User user = new User();
-        for (Map<String, Object> userMap:maps) {
-            log.info("maps :{}",maps);
-            String  username = (String) userMap.get("username");
-            user.setUsername(username);
-            user.setPassword((String) userMap.get("password"));
-            user.setStatus((Integer) userMap.get("status"));
-            user.setId((Integer) userMap.get("id"));
-            redisTemplate.opsForValue().set(USER_APP + "_login_" + username,user,20 ,TimeUnit.HOURS);
 
-            bloomFilter.add(USER_APP+"_login_"+username);
-        }
-        log.info("[初始化数据]-用户数据初始化成功");
-    }
 
     @Override
     public ResponseResult changeUserRealAuthSataus(String name,String idCard) {
