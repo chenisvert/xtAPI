@@ -8,4 +8,6 @@ public class RedisKey {
     //用户数据缓存
     public static final String USER_APP = "userCache";
     public static final String GETACCESSLOCK_KEY = "getAccessInfo";
+    //签到
+    public static final String USER_SIGN_KEY = "sign:";
 }

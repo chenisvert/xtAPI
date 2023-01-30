@@ -19,7 +19,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RBloomFilter;
 import org.redisson.api.RedissonClient;
+import org.springframework.data.redis.connection.BitFieldSubCommands;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -28,12 +30,14 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.StringReader;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static com.api.freeapi.common.ErrorCode.*;
-import static com.api.freeapi.common.RedisKey.USER_APP;
+import static com.api.freeapi.common.RedisKey.*;
 
 @Slf4j
 @Service
@@ -53,6 +57,8 @@ public class UserServiceImpl  extends ServiceImpl<UserMapper, User> implements U
     private RedissonUtils redissonUtils;
     @Resource
     private RedisTemplate redisTemplate;
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
 
     private HashMap<Object, Object> map = new HashMap<>();
@@ -135,6 +141,16 @@ public class UserServiceImpl  extends ServiceImpl<UserMapper, User> implements U
         if (user.getSignIn() == 1){
             throw new UserException("您今天已经签到过了");
         }
+
+        LocalDateTime now = LocalDateTime.now();
+        String keSuffix = now.format(DateTimeFormatter.ofPattern(":yyyyMM"));
+        String key = USER_SIGN_KEY+username+keSuffix;
+        //获取今天是本月的第几天
+        int dayOfMonth = now.getDayOfMonth();
+        //写入redis SETBIT key offset 1
+        stringRedisTemplate.opsForValue().setBit(key,dayOfMonth -1 ,true);
+
+
         //签到奖励服务调用量
         Random ran = new Random();
         int add = ran.nextInt(120);
@@ -151,6 +167,31 @@ public class UserServiceImpl  extends ServiceImpl<UserMapper, User> implements U
 
         map.put("msg","签到成功");
         map.put("addSize", add);
+        return ResponseResult.success(map);
+    }
+
+    @Override
+    public ResponseResult signCount(String username) {
+        LocalDateTime now = LocalDateTime.now();
+        String keSuffix = now.format(DateTimeFormatter.ofPattern(":yyyyMM"));
+        String key = USER_SIGN_KEY+username+keSuffix;
+        int dayOfMonth = now.getDayOfMonth();
+        List<Long> result =  stringRedisTemplate.opsForValue().bitField(
+                key,
+                BitFieldSubCommands.create()
+                        .get(BitFieldSubCommands.BitFieldType.unsigned(dayOfMonth)).valueAt(0)
+        );
+        if (result == null || result.isEmpty()){
+            //没有任何签到结果
+            map.put("sign", 0);
+            return ResponseResult.success(map);
+        }
+        Long num = result.get(0);
+        if (num == null || num == 0){
+            map.put("sign", 0);
+            return ResponseResult.success(map);
+        }
+        map.put("sign", num);
         return ResponseResult.success(map);
     }
 

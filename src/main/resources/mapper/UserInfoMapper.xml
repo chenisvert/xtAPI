@@ -8,7 +8,11 @@
     </update>
 <!--  根据用户名查总点赞  -->
     <select id="selectThumbsCountByUsername"  resultType="com.api.freeapi.entity.UserInfo">
-        select thumbs_up from user_info where username = #{ussername}
+        select thumbs_up from user_info where username = #{username}
+    </select>
+
+    <select id="selectUrlByUsername"  resultType="com.api.freeapi.entity.UserInfo">
+        select url from user_info where username = #{username}
     </select>
 
 

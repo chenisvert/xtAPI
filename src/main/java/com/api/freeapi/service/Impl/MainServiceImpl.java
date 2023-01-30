@@ -1,13 +1,11 @@
 package com.api.freeapi.service.Impl;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.api.freeapi.common.ResponseResult;
 import com.api.freeapi.common.UserException;
 import com.api.freeapi.entity.Context;
 import com.api.freeapi.entity.User;
 import com.api.freeapi.entity.UserInfo;
-import com.api.freeapi.entity.dto.UserDto;
+import com.api.freeapi.entity.vo.UserVO;
 import com.api.freeapi.mapper.MainMapper;
 import com.api.freeapi.mapper.UserInfoMapper;
 import com.api.freeapi.mapper.UserMapper;
@@ -28,14 +26,9 @@ import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.alibaba.druid.sql.ast.expr.SQLSizeExpr.Unit.T;
 import static com.api.freeapi.common.ErrorCode.*;
 import static com.api.freeapi.common.RedisKey.KEY_SEARCH;
 
@@ -57,13 +50,39 @@ public class MainServiceImpl  extends ServiceImpl<MainMapper, Context> implement
     private HashMap<Object, Object> map = new HashMap<>();
 
     @Override
-    public ResponseResult insert(UserDto userDto) {
+    public Boolean checkKeyUrl(String username) {
+
+        String origin = request.getHeader("Origin");
+
+
+        List<UserInfo> url = userInfoMapper.selectUrlByUsername(username);
+        String urls = null;
+        for (UserInfo userInfo:url) {
+            urls = userInfo.getUrl();
+        }
+        log.info("origin:{}",origin);
+        log.info("urls:{}",urls);
+        if (!StringUtils.isBlank(origin) & urls.equals(origin)){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public ResponseResult insert(UserVO userVO) {
         //判空
-        if (StringUtils.isBlank(userDto.getName()) | StringUtils.isBlank(userDto.getEmail()) | StringUtils.isBlank(userDto.getContext())){
+        if (StringUtils.isBlank(userVO.getName()) | StringUtils.isBlank(userVO.getEmail()) | StringUtils.isBlank(userVO.getContext())){
             throw new UserException(PARAMS_ERROR.getErrMsg());
         }
 
-        Integer uuid = userDto.getUuid();
+
+        String uuid = userVO.getUuid();
+        String username = userMapper.selectUsernameByUUid(uuid);
+        Boolean check = this.checkKeyUrl(username);
+        log.info("insert 授权:{}",check);
+        if (!check){
+            throw new UserException("授权失败");
+        }
         //内容缓存
         Set keysPage = redisTemplate.keys(KEY_SEARCH +"_"+"searchPage"+"_" + uuid + "_" + 1 +"_"+"*");
         //关键词查询缓存
@@ -71,9 +90,9 @@ public class MainServiceImpl  extends ServiceImpl<MainMapper, Context> implement
         redisTemplate.delete(keysPage);
         redisTemplate.delete(keysKeyWord);
         Context context = new Context();
-        context.setName(userDto.getName());
-        context.setEmail(userDto.getEmail());
-        context.setContext(userDto.getContext());
+        context.setName(userVO.getName());
+        context.setEmail(userVO.getEmail());
+        context.setContext(userVO.getContext());
         QueryWrapper<User> wrapper = new QueryWrapper<>();
         wrapper.eq("uuid",uuid);
         List<User> user = userMapper.selectList(wrapper);
@@ -97,6 +116,14 @@ public class MainServiceImpl  extends ServiceImpl<MainMapper, Context> implement
     @Override
     public ResponseResult searchKeyWord(String contexts,String key,Integer page,Integer pageSize) {
 
+        if (StringUtils.isBlank(key)){
+            throw new UserException(PARAMS_ERROR.getErrMsg());
+        }
+        String username = userMapper.selectUsernameByUUid(key);
+        Boolean check = this.checkKeyUrl(username);
+        if (!check){
+            throw new UserException("授权失败");
+        }
         Object contextPageCache =  RedisUtil.get(KEY_SEARCH +"_"+"KeyWord"+ "_" + key + "_" +"_"+page+"_"+pageSize+"_"+contexts);
         if (contextPageCache != null){
             map.put("list",contextPageCache);
@@ -135,6 +162,15 @@ public class MainServiceImpl  extends ServiceImpl<MainMapper, Context> implement
 
     @Override
     public ResponseResult searchPage(String key,int page,int pageSize) {
+        if (StringUtils.isBlank(key)){
+            throw new UserException(PARAMS_ERROR.getErrMsg());
+        }
+        String username = userMapper.selectUsernameByUUid(key);
+        Boolean check = this.checkKeyUrl(username);
+        if (!check){
+            throw new UserException("授权失败");
+        }
+
         Object pageCache = RedisUtil.get(KEY_SEARCH +"_"+"searchPage"+"_" + key + "_" + page + "_" + pageSize);
         if (!Objects.isNull(pageCache)){
             map.put("list",pageCache);
@@ -150,6 +186,7 @@ public class MainServiceImpl  extends ServiceImpl<MainMapper, Context> implement
         if (CollectionUtils.isEmpty(usersList)){
             throw  new UserException(KEY_ERROR.getErrMsg());
         }
+
         User user = new User();
         usersList.stream().map((item) ->{
             user.setId(item.getId());

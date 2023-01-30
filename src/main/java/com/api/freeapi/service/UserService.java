@@ -10,6 +10,8 @@ import java.util.List;
 public interface UserService extends IService<User> {
     //每日签到
     ResponseResult signInDay(String username);
+    //获取用户本月截至今天为止的所有签到记录
+    ResponseResult signCount(String username);
     //验证key
     List<User> verifyKey(String key);
     //重置签到状态（全部）

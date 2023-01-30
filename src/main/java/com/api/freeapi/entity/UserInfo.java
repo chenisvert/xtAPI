@@ -13,4 +13,6 @@ public class UserInfo implements Serializable {
     private Integer integral; //积分
 
     private Integer Diamonds; //钻石
+
+    private String url ;
 }

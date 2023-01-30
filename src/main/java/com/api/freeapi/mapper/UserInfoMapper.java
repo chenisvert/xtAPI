@@ -13,4 +13,6 @@ public interface UserInfoMapper extends BaseMapper<UserInfo> {
     Integer addThumbsCountByUsername(@Param("username") String username);
     //根据用户名查总点赞量
     List<UserInfo> selectThumbsCountByUsername(@Param("username") String username);
+    //根据用户名查授权url
+    List<UserInfo> selectUrlByUsername(@Param("username") String username);
 }

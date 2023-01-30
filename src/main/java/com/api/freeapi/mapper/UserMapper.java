@@ -20,4 +20,9 @@ public interface UserMapper extends BaseMapper<User> {
 
     @Select("select uuid from user where username=#{username}")
     String selectUuidByUserName(@Param("username")String username);
+
+    @Select("select username from user where uuid=#{uuid}")
+    String selectUsernameByUUid(@Param("uuid")String uuid);
+
+
 }

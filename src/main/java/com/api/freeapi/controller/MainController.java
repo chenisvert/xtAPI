@@ -1,14 +1,10 @@
 package com.api.freeapi.controller;
 
 import com.api.freeapi.common.ResponseResult;
-import com.api.freeapi.entity.dto.UserDto;
+import com.api.freeapi.entity.vo.UserVO;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.concurrent.TimeUnit;
-
 
 
 @Slf4j
@@ -28,7 +24,7 @@ public class MainController extends BaseController {
      */
     @ResponseBody
     @PostMapping("/insert")
-    public ResponseResult insertContext(@RequestBody UserDto contextDto){
+    public ResponseResult insertContext(@RequestBody UserVO contextDto){
         log.info("入参",contextDto);
         return mainService.insert(contextDto);
     }

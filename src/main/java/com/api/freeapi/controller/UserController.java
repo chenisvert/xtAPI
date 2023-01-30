@@ -47,6 +47,14 @@ public class UserController extends BaseController {
     }
 
 
+    @GetMapping("/signCount")
+    public ResponseResult signCount() {
+        String token = ((HttpServletRequest) request).getHeader("token");
+        String username = TokenUtil.getAccount(token);
+        log.info("token用户名 ,{}", username);
+        return userService.signCount(username);
+    }
+
     @PostMapping("/login")
     public ResponseResult login(@RequestBody User users) {
         map.clear();

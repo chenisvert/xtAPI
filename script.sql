@@ -78,11 +78,12 @@ create index user_uuid_index
 
 create table user_info
 (
-    username  varchar(100)  not null
+    username  varchar(100)             not null
         primary key,
-    thumbs_up int default 0 not null,
-    integral  int default 0 not null,
-    Diamonds  int default 0 not null,
+    thumbs_up int          default 0   not null,
+    integral  int          default 0   not null,
+    Diamonds  int          default 0   not null,
+    url       varchar(200) default '0' not null,
     constraint user_info_username_uindex
         unique (username)
 );
