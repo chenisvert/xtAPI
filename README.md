@@ -6,9 +6,8 @@
 
 
 
-# 项目图片 
-<img src="https://pic.imgdb.cn/item/63c631dabe43e0d30e81d03f.png">
-<p style="color: palevioletred">当然前端配色只是我个人审美，完全可以二次修改，甚至可以二次开发<p>
+# 项目图片 <img width="90px" src="https://pic.imgdb.cn/item/63c63337be43e0d30e841217.png">
+![](https://pic.imgdb.cn/item/63c631dabe43e0d30e81d03f.png)
 
 # 演示地址
 https://cloud66.top/chat \
