@@ -7,7 +7,7 @@
 
 
 # 项目图片 
-![](https://pic.imgdb.cn/item/63c631dabe43e0d30e81d03f.png)
+<img src="https://pic.imgdb.cn/item/63c631dabe43e0d30e81d03f.png">
 <p style="color: palevioletred">当然前端配色只是我个人审美，完全可以二次修改，甚至可以二次开发<p>
 
 # 演示地址
