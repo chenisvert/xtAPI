@@ -9,7 +9,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://47.106.67.99:3306/search?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
     username: root
-    password: xx
+    password: xxx
 
 
   # 邮箱配置
@@ -19,17 +19,39 @@ spring:
     password: xx  # 开启 IMAP/SMTP服务 获得的授权码,而不是qq邮箱的登录密码
     default-encoding: UTF-8
     port: 587
-  # redis配置
   redis:
-    host: 47.106.67.99  #本地IP 或是 虚拟机IP
-    password: xx
-    port: 6379
-    cache:
-      redis:
-        time-to-live: 1800000  # 设置缓存数据的过期时间，30分钟
-    database: 0  # 默认使用 0号db
+    # 数据库（默认为0号库）
+    # database: 2
+    #操作redis需要使用的密码
+#    password: chen2726225713
+    # 端口号
+    #    port: 6379
+    #连接超时时间（毫秒）
+    timeout: 10000ms
+    sentinel:
+      master: mymaster
+      nodes: 115.126.50.127:26379
+
+      # 操作sentinel时需要提供的密码
+      password: xx
+    # 使用lettuce配置
+    lettuce:
+      pool:
+        # 连接池最大连接数（使用负值表示没有限制）
+        max-active: 200
+        # 连接池中的最大空闲连接
+        max-idle: 20
+        # 连接池中的最小空闲连接
+        min-idle: 5
+        # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-wait: -1ms
 
 
+redisson:
+  masterName: mymaster
+  schema: redis://
+  sentinelAddresses: 115.126.50.127:26379
+  password: x
 
 mybatis-plus:
   configuration:

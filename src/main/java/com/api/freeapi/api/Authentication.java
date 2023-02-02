@@ -30,7 +30,7 @@ import java.nio.charset.Charset;
 public class  Authentication{
     public Boolean check(String idCard,String name) throws IOException {
             log.info("Authentication.check 入参 idCard:{} name:{}",idCard,name);
-            JSONObject resultJson = readJsonFromUrl("http://api.ojwyun.cn/index/sm_api?key=xxx&idcard="+idCard+"&name="+name);
+            JSONObject resultJson = readJsonFromUrl("http://api.ojwyun.cn/index/sm_api?key=96c054ebf976a6e604888f82c5673832&idcard="+idCard+"&name="+name);
 //            address = ((JSONObject) resultJson.get("data")).getString("music");
           Integer res = Integer.valueOf(resultJson.get("code").toString());
 
