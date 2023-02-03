@@ -39,10 +39,11 @@ http://qaiji.gitee.io/message/
 <a href="https://gitee.com/qAiJi/message">进入仓库(演示)</a>
 
 ## 部署教程（普通部署）
-1.需要一台服务器
+1.需要至少2台服务器
 2.安装 jdk11 \
 3.安装nginx(并上传nginx文件夹内的配置文件) \
 4.安装mysql \
+5.配置Redis哨兵模式
 6.修改配置文件 \
 7.maven打包项目 \
 8.上传jar包 \
