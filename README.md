@@ -1,6 +1,3 @@
-# 哮天API
-
-
 # 项目简介
 <h1 align="center" dir="auto"><a id="user-content-vctgo-platform-哮天犬API" class="anchor" aria-hidden="true" href="#vctgo-platform-哮天Api"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"></path></svg></a>无后端留言系统的后端代码（哮天API）
 </h1>
@@ -52,7 +49,7 @@ http://qaiji.gitee.io/message/
 8.上传jar包 \
 9. 后台启动 nohup java -jar xxx.jar &
 # 部署教程（docker部署）
-待完善
+<p dir="auto"><g-emoji class="g-emoji" alias="warning" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/26a0.png">⚠</g-emoji> 正在施工中···</p>
 
 # 更新日志 <img width="30px"  src="https://github.githubassets.com/images/icons/emoji/unicode/1f4dd.png">
 2023/1/5 留言查询接口增加分页 \
@@ -65,4 +62,7 @@ http://qaiji.gitee.io/message/
 
 ## 留言 <img width='20px' src="https://github.githubassets.com/images/icons/emoji/unicode/1f618.png">
 如果觉得好就给我一个小小的star吧！
-
+# LICENSE
+<blockquote>
+<p dir="auto">此项目仅为学习,请勿用作商业用途,否则后果自负！</p>
+</blockquote>
