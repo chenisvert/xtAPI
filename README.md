@@ -31,7 +31,7 @@ http://qaiji.gitee.io/message/
 # 部署教程（docker部署）
 待完善
 
-# 更新日志
+# 更新日志 <img width="30px"  src="https://github.githubassets.com/images/icons/emoji/unicode/1f4dd.png">
 2023/1/5 留言查询接口增加分页 \
 2023/1/8 新增登录和注册测试接口(get) \
 2023/1/9 对关键字查询和查询留言的主接口进行了缓存 并对关键字查询接口进行了分页 \
@@ -40,6 +40,6 @@ http://qaiji.gitee.io/message/
 2023/1/15 redis做了哨兵 实现redis服务故障自动切换 \
 2023/1/30 对需要验证key的接口进行了域名授权访问（白名单）
 
-## 留言
+## 留言 <img width='20px' src="https://github.githubassets.com/images/icons/emoji/unicode/1f618.png">
 如果觉得好就给我一个小小的star吧！
 
