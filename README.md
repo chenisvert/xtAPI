@@ -23,7 +23,7 @@
 ├── service          // 业务模块
 </code></pre>
 
-# 项目图片 <img width="70px" src="https://s1.ax1x.com/2023/02/03/pSsPWWT.png">
+## 项目图片 <img width="70px" src="https://s1.ax1x.com/2023/02/03/pSsPWWT.png">
 ![img](https://s1.ax1x.com/2023/02/03/pSsPcoq.png "演示")
 
 
@@ -31,14 +31,14 @@
 
 <p style="color: palevioletred">当然前端配色只是我个人审美，完全可以二次修改，甚至可以二次开发<p>
 
-# 演示地址
+## 演示地址
 https://cloud66.top/chat \
 http://qaiji.gitee.io/message/
 
-# 前端代码
+## 前端代码
 <a href="https://gitee.com/qAiJi/message">进入仓库(演示)</a>
 
-# 部署教程（普通部署）
+## 部署教程（普通部署）
 1.需要一台服务器
 2.安装 jdk11 \
 3.安装nginx(并上传nginx文件夹内的配置文件) \
@@ -47,10 +47,10 @@ http://qaiji.gitee.io/message/
 7.maven打包项目 \
 8.上传jar包 \
 9. 后台启动 nohup java -jar xxx.jar &
-# 部署教程（docker部署）
+## 部署教程（docker部署）
 <p dir="auto"><g-emoji class="g-emoji" alias="warning" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/26a0.png">⚠</g-emoji> 正在施工中···</p>
 
-# 更新日志 <img width="30px"  src="https://github.githubassets.com/images/icons/emoji/unicode/1f4dd.png">
+## 更新日志 <img width="30px"  src="https://github.githubassets.com/images/icons/emoji/unicode/1f4dd.png">
 2023/1/5 留言查询接口增加分页 \
 2023/1/8 新增登录和注册测试接口(get) \
 2023/1/9 对关键字查询和查询留言的主接口进行了缓存 并对关键字查询接口进行了分页 \
@@ -61,7 +61,7 @@ http://qaiji.gitee.io/message/
 
 ## 留言 <img width='20px' src="https://github.githubassets.com/images/icons/emoji/unicode/1f618.png">
 如果觉得好就给我一个小小的star吧！
-# LICENSE
+## LICENSE
 <blockquote>
 <p dir="auto">此项目仅为学习,请勿用作商业用途,否则后果自负！</p>
 </blockquote>
