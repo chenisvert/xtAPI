@@ -20,7 +20,6 @@
 ├── mapper          // 数据操作模块
 ├── service          // 业务模块
 ├── utils          // 工具类模块
-├── service          // 业务模块
 </code></pre>
 
 <br>
@@ -35,8 +34,8 @@
 <br>
 
 ## 演示地址
-https://cloud66.top/chat \
-http://qaiji.gitee.io/message/
+https://cloud66.top \
+https://qaiji.gitee.io/message/
 
 ## 前端代码
 <a href="https://gitee.com/qAiJi/message">进入仓库(演示)</a>
@@ -46,7 +45,7 @@ http://qaiji.gitee.io/message/
 2.安装 jdk11 \
 3.安装nginx(并上传nginx文件夹内的配置文件) \
 4.安装mysql \
-5.配置Redis哨兵模式
+5.配置Redis哨兵模式 \
 6.修改配置文件 \
 7.maven打包项目 \
 8.上传jar包 \
