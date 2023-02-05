@@ -10,6 +10,7 @@ import com.api.freeapi.mapper.MainMapper;
 import com.api.freeapi.mapper.UserInfoMapper;
 import com.api.freeapi.mapper.UserMapper;
 import com.api.freeapi.service.MainService;
+import com.api.freeapi.service.UserService;
 import com.api.freeapi.utils.IPUtil;
 import com.api.freeapi.utils.IpAddressUtils;
 import com.api.freeapi.utils.RedisUtil;
@@ -42,6 +43,8 @@ public class MainServiceImpl  extends ServiceImpl<MainMapper, Context> implement
     private UserMapper userMapper;
     @Resource
     private UserInfoMapper userInfoMapper;
+    @Resource
+    private UserService userService;
     @Resource
     private HttpServletRequest request;
     @Resource
@@ -111,6 +114,30 @@ public class MainServiceImpl  extends ServiceImpl<MainMapper, Context> implement
         context.setAddress(address);
         mainMapper.insert(context);
         return ResponseResult.success();
+    }
+    @Override
+    public ResponseResult selectPage(int page,int pageSize) {
+        log.info("selectPage方法 入参 page{} , pageSize:{}",page,pageSize);
+        String username = userService.getTokenInfo();
+        String key = userService.selectUserKeyByUserName(username);
+        List<User> userList = userService.verifyKey(key);
+        if (CollectionUtils.isEmpty(userList)){
+            return ResponseResult.error(403,"服务异常");
+        }
+        Integer id = null;
+        for (User user:userList) {
+             id = user.getId();
+        }
+        log.info("selectPage方法 key：{}",key);
+        LambdaQueryWrapper<Context> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Context::getUid,id);
+        queryWrapper.select(Context::getUid,Context::getName,Context::getEmail,Context::getContext);
+
+        Page pageInfo = new Page(page,pageSize);
+        Page page1 = mainMapper.selectPage(pageInfo,queryWrapper);
+        log.info("selectPage 方法 page:{}",page1);
+        map.put("list",page1);
+        return ResponseResult.success(map);
     }
 
     @Override
@@ -199,7 +226,7 @@ public class MainServiceImpl  extends ServiceImpl<MainMapper, Context> implement
         queryWrapper.orderByDesc(Context::getId,Context::getThumbsUp);
         queryWrapper.select(Context::getName,Context::getThumbsUp,Context::getEmail,Context::getContext,Context::getCreateTime,Context::getAddress,Context::getId);
         //查询
-        Page page1 = mainMapper.selectPage(pageInfo, queryWrapper);
+        Page page1 = mainMapper.selectPage(pageInfo,queryWrapper);
         List<Context> list = mainMapper.selectMaxThumbsUpById(user.getId());
         if (CollectionUtils.isEmpty(list)){
             throw  new UserException("暂无留言");

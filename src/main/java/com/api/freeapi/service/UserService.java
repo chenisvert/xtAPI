@@ -28,4 +28,6 @@ public interface UserService extends IService<User> {
     String getTokenInfo();
     //id根据获取留言条数
     Integer getMessageCountById(String id);
+    //根据用户名查key
+    String selectUserKeyByUserName(String username);
 }

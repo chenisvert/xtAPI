@@ -24,11 +24,11 @@ public class GlobalExceptionHandler {
      * 异常处理方法
      * @return
      */
-    @ExceptionHandler(Throwable.class)
-    public ResponseResult exceptionHandler(Throwable ex){
-        log.error("出现异常！"+ex.getMessage());
-        return ResponseResult.error(SERVER_ERROR.getErrCode(),SERVER_ERROR.getErrMsg());
-    }
+//    @ExceptionHandler(Throwable.class)
+//    public ResponseResult exceptionHandler(Throwable ex){
+//        log.error("出现异常！"+ex.getMessage());
+//        return ResponseResult.error(SERVER_ERROR.getErrCode(),SERVER_ERROR.getErrMsg());
+//    }
 
 
     /**

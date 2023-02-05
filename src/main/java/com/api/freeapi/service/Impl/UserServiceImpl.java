@@ -9,11 +9,13 @@ import com.api.freeapi.entity.User;
 import com.api.freeapi.mapper.MainMapper;
 import com.api.freeapi.mapper.UserMapper;
 import com.api.freeapi.service.AuthenticationService;
+import com.api.freeapi.service.MainService;
 import com.api.freeapi.service.UserService;
 import com.api.freeapi.utils.RedisUtil;
 import com.api.freeapi.utils.RedissonUtils;
 import com.api.freeapi.utils.TokenUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -35,6 +37,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static com.api.freeapi.common.ErrorCode.*;
 import static com.api.freeapi.common.RedisKey.*;
@@ -119,6 +122,13 @@ public class UserServiceImpl  extends ServiceImpl<UserMapper, User> implements U
         queryWrapper.eq(User::getId,id);
         return this.count(queryWrapper);
     }
+
+    @Override
+    public String selectUserKeyByUserName(String username) {
+        return userMapper.selectUuidByUserName(username);
+    }
+
+
 
     @Override
     public ResponseResult signInDay(String username) {

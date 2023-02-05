@@ -55,6 +55,11 @@ public class UserController extends BaseController {
         return userService.signCount(username);
     }
 
+    @GetMapping("/selectMsgList/{page}/{pageSize}")
+    public ResponseResult selectMsgList(@PathVariable int page,@PathVariable int pageSize) {
+        return mainService.selectPage(page,pageSize);
+    }
+
     @PostMapping("/login")
     public ResponseResult login(@RequestBody User users) {
         map.clear();

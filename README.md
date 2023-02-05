@@ -35,7 +35,8 @@
 
 ## 演示地址
 https://cloud66.top \
-https://qaiji.gitee.io/message/
+https://qaiji.gitee.io/message/ \
+https://z0226.github.io/chat/
 
 ## 前端代码
 <a href="https://gitee.com/qAiJi/message">进入仓库(演示)</a>
@@ -60,12 +61,13 @@ https://qaiji.gitee.io/message/
 
 ## 更新日志 <img width="30px"  src="https://github.githubassets.com/images/icons/emoji/unicode/1f4dd.png">
 2023/1/5 留言查询接口增加分页 \
-2023/1/8 新增登录和注册测试接口(get) \
+2023/1/8 新增管理后台登录和注册 \
 2023/1/9 对关键字查询和查询留言的主接口进行了缓存 并对关键字查询接口进行了分页 \
 2023/1/11 对部分接口加分布式锁 \
 2023/1/13 优化了留言展示的顺序 \
 2023/1/15 redis做了哨兵 实现redis服务故障自动切换 \
-2023/1/30 对需要验证key的接口进行了域名授权访问（白名单）
+2023/1/30 对需要验证key的接口进行了域名授权访问（白名单）\
+2023/2/5 新增接口限流
 
 ## 留言 <img width='20px' src="https://github.githubassets.com/images/icons/emoji/unicode/1f618.png">
 如果觉得好就给我一个小小的star吧！

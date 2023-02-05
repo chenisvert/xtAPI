@@ -47,6 +47,8 @@ public class ApiServiceImpl  extends ServiceImpl<ApiMapper,Api> implements ApiSe
     @Resource
     private UserService userService;
     @Resource
+    private MainService mainService;
+    @Resource
     private UserPrivilegeService userPrivilegeService;
 
     @Resource
@@ -57,7 +59,6 @@ public class ApiServiceImpl  extends ServiceImpl<ApiMapper,Api> implements ApiSe
     @Transactional
     @Override
     public ResponseResult getAccessInfo(Integer id, String key) {
-
         try {
             redissonUtils.lock(GETACCESSLOCK_KEY,10);
         List<User> userList = userService.verifyKey(key);
@@ -145,6 +146,12 @@ public class ApiServiceImpl  extends ServiceImpl<ApiMapper,Api> implements ApiSe
 
     @Override
     public ResponseResult getVisitCountByUsername(String username) {
+
+        Boolean check = mainService.checkKeyUrl(username);
+        log.info("insert 授权:{}",check);
+        if (!check){
+            throw new UserException("授权失败");
+        }
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getUsername,username);
         queryWrapper.select(User::getVisitSize,User::getId);

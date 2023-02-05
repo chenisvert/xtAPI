@@ -1,5 +1,6 @@
 package com.api.freeapi.controller;
 
+import com.api.freeapi.anno.AccessLimit;
 import com.api.freeapi.common.ResponseResult;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import lombok.NonNull;
@@ -19,6 +20,8 @@ public class ApiController extends BaseController {
     public ResponseResult getAccessInfo(@PathVariable String key){
         return apiService.getAccessInfo(1, key);
     }
+
+    @AccessLimit(seconds = 1, maxCount = 5)
     @GetMapping("/setAccessCount/{key}")
     public ResponseResult setAccessCount(@PathVariable String key) {
         return userService.setAccessCount(key);
