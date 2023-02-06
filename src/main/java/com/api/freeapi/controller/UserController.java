@@ -1,6 +1,7 @@
 package com.api.freeapi.controller;
 
 
+import com.api.freeapi.anno.AccessLimit;
 import com.api.freeapi.common.ResponseResult;
 
 import com.api.freeapi.common.UserException;
@@ -60,6 +61,7 @@ public class UserController extends BaseController {
         return mainService.selectPage(page,pageSize);
     }
 
+    @AccessLimit(sec = 10, limit = 1)
     @PostMapping("/login")
     public ResponseResult login(@RequestBody User users) {
         map.clear();
@@ -119,6 +121,7 @@ public class UserController extends BaseController {
         return ResponseResult.success(map);
     }
 
+    @AccessLimit(sec = 5, limit = 1)
     @PostMapping("/register")
     public ResponseResult Register(@RequestBody User users) {
         RBloomFilter<Object> bloomFilter = redissonClient.getBloomFilter("user_login");
@@ -144,6 +147,7 @@ public class UserController extends BaseController {
         return ResponseResult.success(map);
     }
 
+    @AccessLimit(sec = 1, limit = 5)
     @GetMapping("/nameRepeat/{username}")
     public ResponseResult Repeat(@PathVariable String username) {
         //这里暂时先这样写，后面封装到接口里

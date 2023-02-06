@@ -23,6 +23,7 @@ public class MainController extends BaseController {
      * @Since version-11
 
      */
+    @AccessLimit(sec = 5, limit = 1)
     @ResponseBody
     @PostMapping("/insert")
     public ResponseResult insertContext(@RequestBody UserVO contextDto){
@@ -40,7 +41,7 @@ public class MainController extends BaseController {
      * @Since version-11
 
      */
-    @AccessLimit(seconds = 1, maxCount = 3)
+    @AccessLimit(sec = 1, limit = 1)
     @GetMapping("/searchKeyword/{contexts}/{key}/{page}/{pageSize}")
     public ResponseResult searchContext(@NonNull @PathVariable String contexts, @PathVariable String key,@PathVariable Integer page,@PathVariable Integer pageSize){
         ResponseResult search = mainService.searchKeyWord(contexts,key,page,pageSize);
@@ -56,7 +57,7 @@ public class MainController extends BaseController {
      * @Since version-11
 
      */
-    @AccessLimit(seconds = 1, maxCount = 8)
+    @AccessLimit(sec = 1, limit = 5)
     @GetMapping("/searchPage/{key}/{page}/{pageSize}")
     public ResponseResult searchAllContext(@PathVariable String key,@PathVariable int page,@PathVariable int pageSize){
         return mainService.searchPage(key,page,pageSize);
@@ -73,7 +74,7 @@ public class MainController extends BaseController {
 
      */
 
-    @AccessLimit(seconds = 1, maxCount = 5)
+    @AccessLimit(sec = 1, limit = 5)
     @GetMapping("/ThumbsUp/{id}")
     public ResponseResult giveThumbsUp(@PathVariable Integer id){
         return mainService.giveThumbsUp(id);

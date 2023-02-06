@@ -1,6 +1,7 @@
 package com.api.freeapi.config;
 
-import com.api.freeapi.hander.SessionInterceptor;
+
+import com.api.freeapi.hander.AccessLimitInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -20,13 +21,13 @@ import javax.annotation.Resource;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
     @Resource
-    private SessionInterceptor sessionInterceptor;
+    private AccessLimitInterceptor AccessLimitInterceptor;
 
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
 
-        registry.addInterceptor(sessionInterceptor);
+        registry.addInterceptor(AccessLimitInterceptor);
         WebMvcConfigurer.super.addInterceptors(registry);
     }
 }

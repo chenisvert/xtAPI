@@ -21,21 +21,25 @@ public class ApiController extends BaseController {
         return apiService.getAccessInfo(1, key);
     }
 
-    @AccessLimit(seconds = 1, maxCount = 5)
+    @AccessLimit(sec = 1, limit = 6)
     @GetMapping("/setAccessCount/{key}")
     public ResponseResult setAccessCount(@PathVariable String key) {
         return userService.setAccessCount(key);
     }
+
+    @AccessLimit(sec = 1, limit = 5)
     @GetMapping("/getUserInfo/{username}")
     public ResponseResult getUserInfo(@PathVariable String username) {
         return userService.getUserInfo(username);
     }
 
+    @AccessLimit(sec = 1, limit = 3)
     @GetMapping("/getMessageRanking")
     public ResponseResult getMessageRanking() {
         return apiService.getActiveRanking();
     }
 
+    @AccessLimit(sec = 1, limit = 5)
     @GetMapping("/getMessageCount/{username}")
     public ResponseResult getVisitCountByUsername(@PathVariable String username) {
         return apiService.getVisitCountByUsername(username);

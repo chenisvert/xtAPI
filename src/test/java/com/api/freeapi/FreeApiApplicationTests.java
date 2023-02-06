@@ -1,21 +1,28 @@
 package com.api.freeapi;
 
 import com.api.freeapi.api.Authentication;
+import com.api.freeapi.entity.User;
 import com.api.freeapi.mapper.UserInfoMapper;
+import com.api.freeapi.service.MainService;
+import com.api.freeapi.service.UserService;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.util.List;
 
 @SpringBootTest
 class FreeApiApplicationTests {
     @Resource
-    private UserInfoMapper userInfoMapper;
+    private UserService userService;
+    @Resource
+    private MainService mainService;
 
     @Test
     void contextLoads() throws IOException {
-        Boolean check = new Authentication().check("330109200605195134", "陈佳杰");
+        Boolean check = new Authentication().check("xxx", "xxx");
         if (check){
             System.out.println("实名认证成功");
         }else {
@@ -23,10 +30,18 @@ class FreeApiApplicationTests {
         }
 
     }
+//    @Test
+//    void d(){
+//        Integer count = userInfoMapper.addThumbsCountByUsername("chen");
+//        System.out.println(count);
+//    }
+
     @Test
-    void d(){
-        Integer count = userInfoMapper.addThumbsCountByUsername("chen");
-        System.out.println(count);
+    void selectDemo(){
+//        List<User> chen = userService.lambdaQuery()
+//                .select(User::getUsername, User::getEmail)
+//                .eq(User::getUsername, "chen")
+//                .list();
     }
 
 }

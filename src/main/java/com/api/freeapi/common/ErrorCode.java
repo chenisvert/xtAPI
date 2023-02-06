@@ -18,7 +18,7 @@ public enum ErrorCode {
     KEY_ERROR(403,"key不合法"),
     CODE_ERROR(403,"验证码错误"),
     SERVICE_ERROR(402,"服务超限"),
-    TIMEOUT_ERROR(403,"访问频繁，请稍后再试"),
+    FAST_ERROR(403,"访问频繁，请稍后再试"),
     SERVER_ERROR(500,"服务异常"),
     DATA_ERROR(501,"数据获取失败"),
     PERMISSION_ERROR(401,"权限不足"),

@@ -1,9 +1,11 @@
 package com.api.freeapi.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class UserInfo implements Serializable {
 
     private String username;

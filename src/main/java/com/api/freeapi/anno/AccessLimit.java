@@ -16,7 +16,8 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface AccessLimit {
-    int seconds();
-    int maxCount();
-    boolean needLogin()default true;
+    //标识限制次数
+    int limit() default 5;
+    //标识时间
+    int sec() default 5;
 }

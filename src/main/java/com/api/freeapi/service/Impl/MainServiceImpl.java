@@ -16,6 +16,7 @@ import com.api.freeapi.utils.IpAddressUtils;
 import com.api.freeapi.utils.RedisUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
@@ -63,6 +64,9 @@ public class MainServiceImpl  extends ServiceImpl<MainMapper, Context> implement
         for (UserInfo userInfo:url) {
             urls = userInfo.getUrl();
         }
+        if (StringUtils.isBlank(urls)){
+            throw new UserException(KEY_ERROR.getErrMsg());
+        }
         log.info("origin:{}",origin);
         log.info("urls:{}",urls);
         if (!StringUtils.isBlank(origin) & urls.equals(origin)){
@@ -78,7 +82,6 @@ public class MainServiceImpl  extends ServiceImpl<MainMapper, Context> implement
             throw new UserException(PARAMS_ERROR.getErrMsg());
         }
 
-
         String uuid = userVO.getUuid();
         String username = userMapper.selectUsernameByUUid(uuid);
         Boolean check = this.checkKeyUrl(username);
@@ -92,6 +95,7 @@ public class MainServiceImpl  extends ServiceImpl<MainMapper, Context> implement
         Set keysKeyWord = redisTemplate.keys(KEY_SEARCH +"_"+"KeyWord"+ "_" + uuid + "_" +"_"+1+"_"+"*");
         redisTemplate.delete(keysPage);
         redisTemplate.delete(keysKeyWord);
+
         Context context = new Context();
         context.setName(userVO.getName());
         context.setEmail(userVO.getEmail());
