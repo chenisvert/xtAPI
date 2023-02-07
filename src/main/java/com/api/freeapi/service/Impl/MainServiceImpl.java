@@ -77,6 +77,7 @@ public class MainServiceImpl  extends ServiceImpl<MainMapper, Context> implement
 
     @Override
     public ResponseResult insert(UserVO userVO) {
+        log.info("insert方法 入参：{}",userVO);
         //判空
         if (StringUtils.isBlank(userVO.getName()) | StringUtils.isBlank(userVO.getEmail()) | StringUtils.isBlank(userVO.getContext())){
             throw new UserException(PARAMS_ERROR.getErrMsg());
@@ -97,9 +98,7 @@ public class MainServiceImpl  extends ServiceImpl<MainMapper, Context> implement
         redisTemplate.delete(keysKeyWord);
 
         Context context = new Context();
-        context.setName(userVO.getName());
-        context.setEmail(userVO.getEmail());
-        context.setContext(userVO.getContext());
+
         QueryWrapper<User> wrapper = new QueryWrapper<>();
         wrapper.eq("uuid",uuid);
         List<User> user = userMapper.selectList(wrapper);
@@ -111,12 +110,16 @@ public class MainServiceImpl  extends ServiceImpl<MainMapper, Context> implement
         for (User user1:user) {
              uid = user1.getId();
         }
-        context.setUid(uid);
         String ipAddr = IPUtil.getIpAddr(request);
         String address = IpAddressUtils.getIpSource(ipAddr);
+        context.setUid(uid);
         context.setIp(ipAddr);
         context.setAddress(address);
-        mainMapper.insert(context);
+        context.setName(userVO.getName());
+        context.setEmail(userVO.getEmail());
+        context.setContext(userVO.getContext());
+        context.setAvatar(userVO.getAvatar());
+        save(context);
         return ResponseResult.success();
     }
     @Override
@@ -135,7 +138,7 @@ public class MainServiceImpl  extends ServiceImpl<MainMapper, Context> implement
         log.info("selectPage方法 key：{}",key);
         LambdaQueryWrapper<Context> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Context::getUid,id);
-        queryWrapper.select(Context::getUid,Context::getName,Context::getEmail,Context::getContext);
+        queryWrapper.select(Context::getUid,Context::getName,Context::getEmail,Context::getContext,Context::getAvatar,Context::getAddress,Context::getCreateTime,Context::getIp);
 
         Page pageInfo = new Page(page,pageSize);
         Page page1 = mainMapper.selectPage(pageInfo,queryWrapper);
@@ -180,7 +183,7 @@ public class MainServiceImpl  extends ServiceImpl<MainMapper, Context> implement
         queryWrapper.like(Context::getContext,contexts);
         //按照时间倒叙
         queryWrapper.orderByDesc(Context::getId,Context::getThumbsUp);
-        queryWrapper.select(Context::getEmail,Context::getContext,Context::getCreateTime,Context::getName,Context::getAddress);
+        queryWrapper.select(Context::getEmail,Context::getContext,Context::getCreateTime,Context::getName,Context::getAddress,Context::getAvatar);
         Page<Context> pageInfo = new Page<>(page, pageSize);
 
         Page pageContext = mainMapper.selectPage(pageInfo, queryWrapper);
@@ -228,7 +231,7 @@ public class MainServiceImpl  extends ServiceImpl<MainMapper, Context> implement
         queryWrapper.eq(Context::getUid,user.getId());
         //按照id和点赞量倒叙
         queryWrapper.orderByDesc(Context::getId,Context::getThumbsUp);
-        queryWrapper.select(Context::getName,Context::getThumbsUp,Context::getEmail,Context::getContext,Context::getCreateTime,Context::getAddress,Context::getId);
+        queryWrapper.select(Context::getName,Context::getThumbsUp,Context::getEmail,Context::getContext,Context::getCreateTime,Context::getAddress,Context::getId,Context::getAvatar);
         //查询
         Page page1 = mainMapper.selectPage(pageInfo,queryWrapper);
         List<Context> list = mainMapper.selectMaxThumbsUpById(user.getId());

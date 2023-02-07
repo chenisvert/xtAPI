@@ -24,14 +24,15 @@ create table context
 (
     id          int auto_increment
         primary key,
-    uid         int           not null,
-    name        varchar(100)  not null,
-    email       varchar(200)  not null,
-    context     longtext      null,
-    address     varchar(100)  not null,
-    create_time datetime      not null,
-    ip          varchar(100)  null,
-    thumbs_up   int default 0 not null comment '点赞',
+    uid         int                                                                                        not null,
+    name        varchar(100)                                                                               not null,
+    email       varchar(200)                                                                               not null,
+    context     longtext                                                                                   null,
+    address     varchar(100)                                                                               not null,
+    create_time datetime                                                                                   not null,
+    ip          varchar(100)                                                                               null,
+    thumbs_up   int          default 0                                                                     not null comment '点赞',
+    avatar      varchar(256) default 'https://bpic.51yuansu.com/pic2/cover/00/43/85/58139fe3a6e09_610.jpg' null,
     constraint context_id_uindex
         unique (id)
 );

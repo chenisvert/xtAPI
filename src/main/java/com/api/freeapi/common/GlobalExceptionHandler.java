@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.api.freeapi.common.ErrorCode.SERVER_ERROR;
+import static com.api.freeapi.common.ErrorCode.SYSTEM_ERROR;
 
 /**
  * 全局异常处理
@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
             return ResponseResult.error(403,e.getMessage());
         }
         //返回默认错误
-        return ResponseResult.error(SERVER_ERROR.getErrCode(),SERVER_ERROR.getErrMsg());
+        return ResponseResult.error(SYSTEM_ERROR.getErrCode(),SYSTEM_ERROR.getErrMsg());
     }
 
 

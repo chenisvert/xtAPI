@@ -41,4 +41,7 @@ public class Context implements Serializable {
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
+    //头像
+    private String avatar;
+
 }
