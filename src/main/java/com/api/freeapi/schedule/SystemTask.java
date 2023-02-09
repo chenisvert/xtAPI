@@ -1,4 +1,4 @@
-package com.api.freeapi.job;
+package com.api.freeapi.schedule;
 
 import com.api.freeapi.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ import javax.annotation.Resource;
 @Slf4j
 @Configuration    // 1. 代表当前类是一个配置类
 @EnableScheduling // 2.开启定时任务
-public class SystemJob {
+public class SystemTask {
     @Resource
     private UserService userService;
     /***

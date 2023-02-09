@@ -5,6 +5,7 @@ import com.api.freeapi.anno.AccessLimit;
 import com.api.freeapi.common.ResponseResult;
 
 import com.api.freeapi.common.UserException;
+import com.api.freeapi.config.RabbitMQConfig;
 import com.api.freeapi.entity.Authentication;
 import com.api.freeapi.entity.User;
 import com.api.freeapi.entity.UserInfo;
@@ -71,11 +72,8 @@ public class UserController extends BaseController {
         if (StringUtils.isBlank(username) | StringUtils.isBlank(password)) {
             throw new UserException(PARAMS_ERROR.getErrMsg());
         }
-
-
         //加密
         password = MD5Util.getMD5(password);
-
         //查数据库
         User user = new User();
         user.setUsername(username);
@@ -100,22 +98,20 @@ public class UserController extends BaseController {
             }
         } else {
             return ResponseResult.error(USERNAME_ERROR.getErrCode(), USERNAME_ERROR.getErrMsg());
-
         }
-        //数据库登录成功
-
-        log.info("登录成功 方式:{数据库}");
+        //登录成功
+        log.info("登录成功 用户名：{}",username);
         User userUpDataTime = new User();
         userUpDataTime.setId(user1.getId());
         userUpDataTime.setLastLogin(LocalDateTime.now());
-        //更新上一次登录时间
-        userService.saveOrUpdate(userUpDataTime);
+        //更新登录时间
+        amqpTemplate.convertAndSend(RabbitMQConfig.EXCHANGE_SPRINGBOOT_NAME,"",userUpDataTime);
 
         redisTemplate.opsForValue().set(USER_APP + "_login_" + user1.getUsername(), user1);
         Long currentTimeMillis = System.currentTimeMillis();
         String token = TokenUtil.sign(username, currentTimeMillis);
         RedisUtil.set(username, currentTimeMillis, TokenUtil.REFRESH_EXPIRE_TIME);
-        response.setHeader("Authorization", token);
+        response.setHeader("token", token);
         response.setHeader("Access-Control-Expose-Headers", "Authorization");
         map.put("token", token);
         return ResponseResult.success(map);

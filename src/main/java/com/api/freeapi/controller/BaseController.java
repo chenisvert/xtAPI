@@ -4,6 +4,8 @@ package com.api.freeapi.controller;
 import com.api.freeapi.entity.Api;
 import com.api.freeapi.entity.UserInfo;
 import com.api.freeapi.service.*;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.rabbit.annotation.RabbitBootstrapConfiguration;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -35,6 +37,8 @@ public class BaseController {
     protected AuthenticationService authenticationService;
     @Resource
     protected UserInfoService userInfoService;
+    @Resource
+    protected AmqpTemplate amqpTemplate;
 
 
 

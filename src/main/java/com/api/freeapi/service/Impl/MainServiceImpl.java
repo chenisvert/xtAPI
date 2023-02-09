@@ -122,6 +122,7 @@ public class MainServiceImpl  extends ServiceImpl<MainMapper, Context> implement
         save(context);
         return ResponseResult.success();
     }
+
     @Override
     public ResponseResult selectPage(int page,int pageSize) {
         log.info("selectPage方法 入参 page{} , pageSize:{}",page,pageSize);
@@ -137,14 +138,29 @@ public class MainServiceImpl  extends ServiceImpl<MainMapper, Context> implement
         }
         log.info("selectPage方法 key：{}",key);
         LambdaQueryWrapper<Context> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Context::getUid,id);
-        queryWrapper.select(Context::getUid,Context::getName,Context::getEmail,Context::getContext,Context::getAvatar,Context::getAddress,Context::getCreateTime,Context::getIp);
+        queryWrapper
+                .eq(Context::getUid,id)
+                .orderByDesc(Context::getId)
+                .select(Context::getId,Context::getUid,Context::getName,Context::getEmail,Context::getContext,Context::getAvatar,Context::getAddress,Context::getCreateTime,Context::getIp);
+
 
         Page pageInfo = new Page(page,pageSize);
         Page page1 = mainMapper.selectPage(pageInfo,queryWrapper);
         log.info("selectPage 方法 page:{}",page1);
         map.put("list",page1);
         return ResponseResult.success(map);
+    }
+
+    @Override
+    public ResponseResult deleteById(Integer id) {
+        if (id == null){
+            throw new UserException(PARAMS_ERROR.getErrMsg());
+        }
+        Integer count = mainMapper.deleteById(id);
+        if (count > 1){
+            ResponseResult.error(403,"留言不存在");
+        }
+        return ResponseResult.success();
     }
 
     @Override

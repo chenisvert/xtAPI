@@ -24,6 +24,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private AccessLimitInterceptor AccessLimitInterceptor;
 
 
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
 

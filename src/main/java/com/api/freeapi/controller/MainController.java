@@ -79,4 +79,21 @@ public class MainController extends BaseController {
     public ResponseResult giveThumbsUp(@PathVariable Integer id){
         return mainService.giveThumbsUp(id);
     }
+
+    /***
+     *
+     * 单个删除
+     * @Author chen
+     * @Date  14:18
+     * @Param id
+     * @Return ResponseResult
+     * @Since version-11
+
+     */
+
+    @AccessLimit(sec = 1, limit = 5)
+    @GetMapping("/delete/{id}")
+    public ResponseResult delete(@PathVariable Integer id){
+        return mainService.deleteById(id);
+    }
 }

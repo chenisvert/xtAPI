@@ -16,6 +16,8 @@ public interface MainService  extends IService<Context> {
     ResponseResult searchPage(String key,int page,int pageSize);
     //点赞
     ResponseResult giveThumbsUp(Integer id);
-    //
+    //带token的查询
     ResponseResult selectPage(int page,int pageSize);
+    //删除留言
+    ResponseResult deleteById(Integer id);
 }

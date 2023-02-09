@@ -14,4 +14,8 @@
         select thumbs_up from context where uid = #{uid} order by thumbs_up desc limit 1
     </select>
 
+    <delete id="deleteById"   parameterType="Integer">
+        delete from context where id = #{id}
+    </delete>
+
 </mapper>

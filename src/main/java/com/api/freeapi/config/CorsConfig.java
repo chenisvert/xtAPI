@@ -1,6 +1,7 @@
 package com.api.freeapi.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -17,11 +18,11 @@ public class CorsConfig implements WebMvcConfigurer {
                 .allowedOriginPatterns("*")
                 //放行哪些请求方式
                 .allowedMethods("*")
-                //.allowedMethods("*") //或者放行全部
                 //放行哪些原始请求头部信息
                 .allowedHeaders("*")
                 //暴露哪些原始请求头部信息
-                .exposedHeaders("*");
+                .exposedHeaders("*")
+                .maxAge(3600);// 跨域允许时间
     }
 }
 

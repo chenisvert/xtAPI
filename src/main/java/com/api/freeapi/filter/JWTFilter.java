@@ -29,6 +29,8 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
      */
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
+
+
         System.out.println("isAccessAllowed方法");
         try{
             return executeLogin(request,response);
@@ -48,6 +50,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
      */
     @Override
     protected boolean isLoginAttempt(ServletRequest request, ServletResponse response) {
+
         System.out.println("isLoginAttempt方法");
         String token=((HttpServletRequest)request).getHeader("token");
         if (token!=null){
@@ -143,8 +146,18 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
      */
     @Override
     protected boolean preHandle(ServletRequest request, ServletResponse response) throws Exception {
+        HttpServletResponse  httpServletResponse = (HttpServletResponse) response;
         HttpServletRequest httpServletRequest= (HttpServletRequest) request;
-        HttpServletResponse httpServletResponse= (HttpServletResponse) response;
+        if(httpServletRequest.getMethod().equals("OPTIONS")){
+            //设置允许跨域
+            httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
+            httpServletResponse.setHeader("Access-Control-Allow-Headers","*");
+            httpServletResponse.setHeader("Access-Control-Allow-Methods","*");
+            httpServletResponse.setHeader("Access-Control-Allow-Credentials","true");
+            httpServletResponse.setHeader("Access-Control-Max-Age","3600");
+            return true;
+        }
+
         httpServletResponse.setHeader("Access-Control-Allow-Origin",httpServletRequest.getHeader("Origin"));
         httpServletResponse.setHeader("Access-Control-Allow-Methods","GET,POST,OPTIONS,PUT,DELETE");
         httpServletResponse.setHeader("Access-Control-Allow-Headers",httpServletRequest.getHeader("Access-Control-Resquest-Headers"));

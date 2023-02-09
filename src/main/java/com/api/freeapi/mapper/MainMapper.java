@@ -15,5 +15,7 @@ public interface MainMapper extends BaseMapper<Context> {
     List<Context> selectThumbsUpById(@Param("id") Integer id);
 
     List<Context> selectMaxThumbsUpById(@Param("uid") Integer uid);
+    //根据id删除留言
+    Integer deleteById(@Param("id") Integer id);
 
 }
