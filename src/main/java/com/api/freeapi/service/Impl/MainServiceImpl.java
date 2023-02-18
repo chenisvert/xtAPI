@@ -23,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 
@@ -75,6 +76,7 @@ public class MainServiceImpl  extends ServiceImpl<MainMapper, Context> implement
         return false;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public ResponseResult insert(UserVO userVO) {
         log.info("insert方法 入参：{}",userVO);
@@ -90,13 +92,6 @@ public class MainServiceImpl  extends ServiceImpl<MainMapper, Context> implement
         if (!check){
             throw new UserException("授权失败");
         }
-        //内容缓存
-        Set keysPage = redisTemplate.keys(KEY_SEARCH +"_"+"searchPage"+"_" + uuid + "_" + 1 +"_"+"*");
-        //关键词查询缓存
-        Set keysKeyWord = redisTemplate.keys(KEY_SEARCH +"_"+"KeyWord"+ "_" + uuid + "_" +"_"+1+"_"+"*");
-        redisTemplate.delete(keysPage);
-        redisTemplate.delete(keysKeyWord);
-
         Context context = new Context();
 
         QueryWrapper<User> wrapper = new QueryWrapper<>();
@@ -120,6 +115,13 @@ public class MainServiceImpl  extends ServiceImpl<MainMapper, Context> implement
         context.setContext(userVO.getContext());
         context.setAvatar(userVO.getAvatar());
         save(context);
+        //内容缓存
+        Set keysPage = redisTemplate.keys(KEY_SEARCH +"_"+"searchPage"+"_" + uuid + "_" + 1 +"_"+"*");
+        //关键词查询缓存
+        Set keysKeyWord = redisTemplate.keys(KEY_SEARCH +"_"+"KeyWord"+ "_" + uuid + "_" +"_"+1+"_"+"*");
+        //删除缓存
+        redisTemplate.delete(keysPage);
+        redisTemplate.delete(keysKeyWord);
         return ResponseResult.success();
     }
 
