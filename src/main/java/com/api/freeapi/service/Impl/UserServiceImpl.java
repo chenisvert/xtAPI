@@ -17,6 +17,7 @@ import com.api.freeapi.utils.TokenUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RBloomFilter;
@@ -69,8 +70,10 @@ public class UserServiceImpl  extends ServiceImpl<UserMapper, User> implements U
 
 
 
+    @SneakyThrows
     @Override
     public ResponseResult changeUserRealAuthSataus(String name,String idCard) {
+
         String usernameToken = this.getTokenInfo();
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getUsername,usernameToken);
@@ -84,13 +87,20 @@ public class UserServiceImpl  extends ServiceImpl<UserMapper, User> implements U
              id = user.getId();
             log.info("======={}",id);
         }
-        if (authentication == 1){
-            throw new UserException("您已经实名认证了");
+        String lockName = AUTH_USER_LOCK+name;
+        RedissonUtils.lock(lockName);
+        boolean isLock = RedissonUtils.tryLock(lockName);
+        if (!isLock){
+            log.info("实名认证失败-原因：获取锁失败");
+            return ResponseResult.error(ILLEGAl_ERROR.getErrCode(),ILLEGAl_ERROR.getErrMsg());
         }
         try {
+            if (authentication == 1) {
+                throw new UserException("您已经实名认证了");
+            }
             Boolean checkAuth = new Authentication().check(idCard, name);
-            if (!checkAuth){
-                throw new UserException("实名认证失败");
+            if (!checkAuth) {
+                throw new UserException("实名认证失败-【原因】:信息不符");
             }
             User users = new User();
             users.setId(id);
@@ -98,13 +108,13 @@ public class UserServiceImpl  extends ServiceImpl<UserMapper, User> implements U
             //更改状态
             userMapper.updateById(users);
             //写实名信息表
-            authenticationService.addAuth(usernameToken,name,idCard);
-        } catch (IOException e) {
-            e.printStackTrace();
+            authenticationService.addAuth(usernameToken, name, idCard);
+            map.put("username", usernameToken);
+            map.put("msg", "实名认证成功");
+            return ResponseResult.success(map);
+        }finally {
+            RedissonUtils.unlock(lockName);
         }
-        map.put("username",usernameToken);
-        map.put("msg","实名认证成功");
-        return ResponseResult.success(map);
     }
 
     @Override

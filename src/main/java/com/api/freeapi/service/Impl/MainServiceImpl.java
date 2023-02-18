@@ -162,6 +162,13 @@ public class MainServiceImpl  extends ServiceImpl<MainMapper, Context> implement
         if (count > 1){
             ResponseResult.error(403,"留言不存在");
         }
+        //内容缓存
+        Set keysPage = redisTemplate.keys(KEY_SEARCH +"_"+"searchPage"+"_*");
+        //关键词查询缓存
+        Set keysKeyWord = redisTemplate.keys(KEY_SEARCH +"_"+"KeyWord"+ "_*");
+        //删除缓存
+        redisTemplate.delete(keysPage);
+        redisTemplate.delete(keysKeyWord);
         return ResponseResult.success();
     }
 

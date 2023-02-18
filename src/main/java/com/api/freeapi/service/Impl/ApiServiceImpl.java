@@ -60,7 +60,7 @@ public class ApiServiceImpl  extends ServiceImpl<ApiMapper,Api> implements ApiSe
     @Override
     public ResponseResult getAccessInfo(Integer id, String key) {
         try {
-            redissonUtils.lock(GETACCESSLOCK_KEY,10);
+            redissonUtils.lock(GETACCESSLOCK_KEY+key,10);
         List<User> userList = userService.verifyKey(key);
         if (CollectionUtils.isEmpty(userList)){
             throw new UserException(KEY_ERROR.getErrMsg());

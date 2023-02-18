@@ -23,7 +23,7 @@ public enum ErrorCode {
     DATA_ERROR(501,"数据获取失败"),
     PERMISSION_ERROR(401,"权限不足"),
     USER_ERROR(403,"账户被禁用"),
-    SESSION_ERROR(403,"请登录");
+    ILLEGAl_ERROR(403,"非法操作");
 
 
     private int ErrCode;
