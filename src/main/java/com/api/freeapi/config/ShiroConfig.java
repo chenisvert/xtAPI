@@ -39,6 +39,7 @@ public class ShiroConfig {
         //数据接口放行
         filterRuleMap.put("/user/login/**","anon");
         filterRuleMap.put("/user/register/**","anon");
+        filterRuleMap.put("/user/downloadFile/**","anon");
         filterRuleMap.put("/user/nameRepeat/**","anon");
         filterRuleMap.put("/api/**","anon");
         filterRuleMap.put("/main/**","anon");

@@ -5,6 +5,8 @@ import com.api.freeapi.entity.Context;
 import com.api.freeapi.entity.vo.UserVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.io.IOException;
+
 public interface MainService  extends IService<Context> {
     //校验key授权
     Boolean checkKeyUrl(String username);
@@ -20,4 +22,6 @@ public interface MainService  extends IService<Context> {
     ResponseResult selectPage(int page,int pageSize);
     //删除留言
     ResponseResult deleteById(Integer id);
+
+    ResponseResult writeDbtoExcel(Integer uid) throws IOException;
 }

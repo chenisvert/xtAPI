@@ -35,6 +35,7 @@ public class GlobalExceptionHandler {
             return ResponseResult.error(403,e.getMessage());
         }
         //返回默认错误
+        ex.printStackTrace();
         return ResponseResult.error(SYSTEM_ERROR.getErrCode(),SYSTEM_ERROR.getErrMsg());
     }
 

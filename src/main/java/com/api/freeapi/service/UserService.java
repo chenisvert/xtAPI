@@ -26,6 +26,8 @@ public interface UserService extends IService<User> {
     ResponseResult changeUserRealAuthSataus(String name,String idCard);
     //token获取用户名
     String getTokenInfo();
+    //根据用户名查uid
+    Integer getUidByUsername(String username);
     //id根据获取留言条数
     Integer getMessageCountById(String id);
     //根据用户名查key

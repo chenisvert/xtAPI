@@ -124,6 +124,11 @@ public class UserServiceImpl  extends ServiceImpl<UserMapper, User> implements U
     }
 
     @Override
+    public Integer getUidByUsername(String username) {
+        return userMapper.queryUidByUsername(username);
+    }
+
+    @Override
     public Integer getMessageCountById(String id) {
         if (id == null){
             throw new UserException(PARAMS_ERROR.getErrMsg());

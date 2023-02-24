@@ -16,11 +16,16 @@ import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RBloomFilter;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -32,6 +37,9 @@ import static com.api.freeapi.common.RedisKey.USER_APP;
 @RestController
 @RequestMapping("/user")
 public class UserController extends BaseController {
+
+    @Value("${file.basepath.filepath}")
+    private String filepath;
 
     private HashMap<Object, Object> map = new HashMap<>();
     @Resource
@@ -164,5 +172,44 @@ public class UserController extends BaseController {
             throw new UserException(PARAMS_ERROR.getErrMsg());
         }
         return userService.changeUserRealAuthSataus(name, idCard);
+    }
+
+    //下载
+    @GetMapping("/downloadFile/{name}")
+    public void download(@PathVariable String name) {
+        if (StringUtils.isEmpty(name)){
+            throw new  UserException(PARAMS_ERROR.getErrMsg());
+        }
+        try {
+            //输入流，通过输入流读取文件内容
+            FileInputStream fileInputStream = new FileInputStream(new File(filepath+"/backup/" + name));
+
+            //输出流，通过输出流将文件写回浏览器
+            ServletOutputStream outputStream = response.getOutputStream();
+
+//            response.setContentType("image/jpeg");
+            response.setContentType("application/x-xls");
+
+            int len = 0;
+            byte[] bytes = new byte[1024];
+            while ((len = fileInputStream.read(bytes)) != -1) {
+                outputStream.write(bytes, 0, len);
+                outputStream.flush();
+            }
+            //关闭资源
+            outputStream.close();
+            fileInputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.info("下载失败");
+            throw new  UserException("下载失败");
+        }
+    }
+    @AccessLimit(sec = 1, limit = 1)
+    @GetMapping("/backup")
+    public ResponseResult pushAll() throws IOException {
+        String username = userService.getTokenInfo();
+        Integer uid = userService.getUidByUsername(username);
+        return mainService.writeDbtoExcel(uid);
     }
 }
