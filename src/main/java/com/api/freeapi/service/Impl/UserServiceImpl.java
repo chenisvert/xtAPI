@@ -88,8 +88,8 @@ public class UserServiceImpl  extends ServiceImpl<UserMapper, User> implements U
             log.info("======={}",id);
         }
         String lockName = AUTH_USER_LOCK+name;
-        RedissonUtils.lock(lockName);
-        boolean isLock = RedissonUtils.tryLock(lockName);
+        redissonUtils.lock(lockName);
+        boolean isLock = redissonUtils.tryLock(lockName);
         if (!isLock){
             log.info("实名认证失败-原因：获取锁失败");
             return ResponseResult.error(ILLEGAl_ERROR.getErrCode(),ILLEGAl_ERROR.getErrMsg());
@@ -113,7 +113,7 @@ public class UserServiceImpl  extends ServiceImpl<UserMapper, User> implements U
             map.put("msg", "实名认证成功");
             return ResponseResult.success(map);
         }finally {
-            RedissonUtils.unlock(lockName);
+            redissonUtils.unlock(lockName);
         }
     }
 

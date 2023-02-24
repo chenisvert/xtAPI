@@ -19,14 +19,14 @@ import java.util.concurrent.TimeUnit;
 public class  RedissonUtils {
 
   @Resource
-  private static RedissonClient redissonClient;
+  private  RedissonClient redissonClient;
 
   /**
    * 加锁
    *
    * @param lockKey
    */
-  public static void  lock(String lockKey) {
+  public  void  lock(String lockKey) {
     RLock lock = redissonClient.getLock(lockKey);
     lock.lock();
   }
@@ -37,7 +37,7 @@ public class  RedissonUtils {
    * @param lockKey   key
    * @param leaseTime 上锁后自动释放锁时间
    */
-  public static void lock(String lockKey, long leaseTime) {
+  public  void lock(String lockKey, long leaseTime) {
     RLock lock = redissonClient.getLock(lockKey);
     lock.lock(leaseTime, TimeUnit.SECONDS);
   }
@@ -49,7 +49,7 @@ public class  RedissonUtils {
    * @param leaseTime 上锁后自动释放锁时间
    * @param unit      时间单位
    */
-  public static void lock(String lockKey, long leaseTime, TimeUnit unit) {
+  public  void lock(String lockKey, long leaseTime, TimeUnit unit) {
     RLock lock = redissonClient.getLock(lockKey);
     lock.lock(leaseTime, unit);
   }
@@ -60,7 +60,7 @@ public class  RedissonUtils {
    * @param lockKey key
    * @return
    */
-  public static boolean tryLock(String lockKey) {
+  public  boolean tryLock(String lockKey) {
     RLock lock = redissonClient.getLock(lockKey);
     return lock.tryLock();
   }
@@ -73,7 +73,7 @@ public class  RedissonUtils {
    * @param leaseTime 上锁后自动释放锁时间
    * @return boolean
    */
-  public static boolean tryLock(String lockKey, long waitTime, long leaseTime) {
+  public  boolean tryLock(String lockKey, long waitTime, long leaseTime) {
     RLock lock = redissonClient.getLock(lockKey);
     try {
       return lock.tryLock(waitTime, leaseTime, TimeUnit.SECONDS);
@@ -93,7 +93,7 @@ public class  RedissonUtils {
    * @param unit      时间单位
    * @return boolean
    */
-  public static  boolean tryLock(String lockKey, long waitTime, long leaseTime, TimeUnit unit) {
+  public   boolean tryLock(String lockKey, long waitTime, long leaseTime, TimeUnit unit) {
     RLock lock = redissonClient.getLock(lockKey);
     try {
       return lock.tryLock(waitTime, leaseTime, unit);
@@ -109,7 +109,7 @@ public class  RedissonUtils {
    *
    * @param lockKey key
    */
-  public static void unlock(String lockKey) {
+  public  void unlock(String lockKey) {
     RLock lock = redissonClient.getLock(lockKey);
     lock.unlock();
   }
@@ -120,7 +120,7 @@ public class  RedissonUtils {
    * @param lockKey key
    * @return
    */
-  public static boolean isLocked(String lockKey) {
+  public  boolean isLocked(String lockKey) {
     RLock lock = redissonClient.getLock(lockKey);
     return lock.isLocked();
   }
