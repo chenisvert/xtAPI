@@ -3,13 +3,10 @@ package com.api.freeapi.service.Impl;
 import com.api.freeapi.common.ResponseResult;
 import com.api.freeapi.common.UserException;
 import com.api.freeapi.entity.Api;
-import com.api.freeapi.entity.Context;
 import com.api.freeapi.entity.User;
 import com.api.freeapi.entity.UserPrivilege;
 import com.api.freeapi.mapper.ApiMapper;
-import com.api.freeapi.mapper.MainMapper;
 import com.api.freeapi.mapper.UserMapper;
-import com.api.freeapi.mapper.UserPrivilegeMapper;
 import com.api.freeapi.service.ApiService;
 import com.api.freeapi.service.MainService;
 import com.api.freeapi.service.UserPrivilegeService;
@@ -18,7 +15,6 @@ import com.api.freeapi.utils.IPUtil;
 import com.api.freeapi.utils.IpAddressUtils;
 import com.api.freeapi.utils.RedissonUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static com.api.freeapi.common.ErrorCode.*;
-import static com.api.freeapi.common.RedisKey.GETACCESSLOCK_KEY;
+import static com.api.freeapi.common.RedisConstants.GETACCESSLOCK_KEY;
 
 
 @Slf4j

@@ -1,8 +1,6 @@
 package com.api.freeapi.common;
 
-import java.io.File;
-
-public class RedisKey {
+public class RedisConstants {
     //查询缓存key
     public static final String KEY_SEARCH = "searchContext:";
     //用户数据缓存

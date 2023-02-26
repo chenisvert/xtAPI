@@ -3,24 +3,19 @@ package com.api.freeapi.service.Impl;
 import com.api.freeapi.api.Authentication;
 import com.api.freeapi.common.ResponseResult;
 import com.api.freeapi.common.UserException;
-import com.api.freeapi.config.RedissonManager;
 import com.api.freeapi.entity.Context;
 import com.api.freeapi.entity.User;
 import com.api.freeapi.mapper.MainMapper;
 import com.api.freeapi.mapper.UserMapper;
 import com.api.freeapi.service.AuthenticationService;
-import com.api.freeapi.service.MainService;
 import com.api.freeapi.service.UserService;
-import com.api.freeapi.utils.RedisUtil;
 import com.api.freeapi.utils.RedissonUtils;
 import com.api.freeapi.utils.TokenUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.redisson.api.RBloomFilter;
 import org.redisson.api.RedissonClient;
 import org.springframework.data.redis.connection.BitFieldSubCommands;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -29,19 +24,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.StringReader;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import static com.api.freeapi.common.ErrorCode.*;
-import static com.api.freeapi.common.RedisKey.*;
+import static com.api.freeapi.common.RedisConstants.*;
 
 @Slf4j
 @Service

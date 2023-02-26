@@ -14,7 +14,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RBloomFilter;
-import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.CollectionUtils;
@@ -30,7 +29,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.api.freeapi.common.ErrorCode.*;
-import static com.api.freeapi.common.RedisKey.USER_APP;
+import static com.api.freeapi.common.RedisConstants.USER_APP;
 
 
 @Slf4j
